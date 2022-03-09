@@ -1,0 +1,16 @@
+module shifter (
+    input a[16], //value from reg a to shift
+    input b[4], //using the lowest 4 bits of b to determine how much to shift
+    input alufn[6], // use only the lowest 2 bits of ALUFN. 00: lshift, 01: urshift, 10: arithmeticRightShift 
+    output out[16] //shifted output
+  ) {
+  
+  sig result[3][16];
+  
+  always {
+    result[0] = a << b;
+    result[1] = a >> b;
+    result[2] = a >>> b;
+    out = result[alufn[1:0]];
+  }
+}

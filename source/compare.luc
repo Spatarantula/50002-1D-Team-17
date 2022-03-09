@@ -1,0 +1,22 @@
+module compare (
+    input alufn[6],
+    input z, //z from adder
+    input v, //v from adder
+    input n, //n from adder
+    output out[16] // 16-bit output
+  ) {
+
+  always {
+    out[15:1] = b0;
+    
+    case (alufn[2:1]) {
+      b01:              //compare equal
+        out[0] = z;
+      b10:              //compare less than
+        out[0] = n ^ v;
+      b11:              //compare less than or equal to
+        out[0] = z | (n ^ v);
+      default:         //default value
+        out[0] = b0;
+  }
+}

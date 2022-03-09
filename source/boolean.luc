@@ -1,0 +1,22 @@
+module boolean (
+    input a[16],
+    input b[16],
+    input alufn[6],
+    output out[16]
+  ) {
+
+  
+  always {
+
+    case(alufn[3:0]){ //using just the first 4 bits of the alufn signal
+    
+      4h8: out = a & b; //if alufn = 1000: a AND b
+      4hE: out = a | b; //if alufn = 1110: a OR b
+      4h6: out = a ^ b; //if alufn = 0110: a XOR b
+      4hA: out = a; //if alufn = 1010: return a
+      
+      default: out = 16h0000; //if alufn is none of the given, return 0
+    }
+   
+  }
+}
