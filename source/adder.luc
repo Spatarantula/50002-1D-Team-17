@@ -14,7 +14,7 @@ module adder (
     out = a+b;
     
     n = out[15]; //MSB of sum determines the sign of sum
-    v = (a[15] & (b[15] ^ alufn[0]) & !out[15]) | (!a[15] & !(b[15] ^ alufn[0]) & out[15]); //translate the lab3 schematic 
+    v = (a[15] & b[15] & !out[15]) | (!a[15] & !b[15] & out[15]); //translate the lab3 schematic 
     z = ~|out; // or reduction to reduce sum into 1-bit, then bitwise negate that value
   }
 }
