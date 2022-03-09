@@ -11,12 +11,11 @@ module adder (
   sig sum[16]; //temp variable to compute sum
   
   always {
-    case(alufn[0]){
-      0: sum = a+b; //if alufn[0] = 0, add
-      1: sum = a-b; //if alufn[0] = 1, subtract
-      default: sum = 16h0000; //else sum = 0
-  }
-    out = sum;
+
+    b = 16x{alufn[0]} ^ b;
+
+    out = a+b;
+    
     n = sum[15]; //MSB of sum determines the sign of sum
     v = (a[15] & (b[15] ^ alufn[0]) & !sum[15]) | (!a[15] & !(b[15] ^ alufn[0]) & sum[15]); //translate the lab3 schematic 
     z = ~|sum; // or reduction to reduce sum into 1-bit, then bitwise negate that value
