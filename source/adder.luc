@@ -7,14 +7,19 @@ module adder (
     output v[1], //1-bit output for checking overflow
     output n[1] //1-bit output for checking if sum is negative
   ) {
+
+  sig sum[16];
+  sig xb[16];
+  
   always {
 
     xb = 16x{alufn[0]} ^ b;
 
-    out = a+b;
+    sum = a+b;
     
-    n = out[15]; //MSB of sum determines the sign of sum
-    v = (a[15] & xb[15] & !out[15]) | (!a[15] & !xb[15] & out[15]); //translate the lab3 schematic 
-    z = ~|out; // or reduction to reduce sum into 1-bit, then bitwise negate that value
+    n = sum[15]; //MSB of sum determines the sign of sum
+    v = (a[15] & xb[15] & !sum[15]) | (!a[15] & !xb[15] & sum[15]); //translate the lab3 schematic 
+    z = ~|sum; // or reduction to reduce sum into 1-bit, then bitwise negate that value
+    out = sum;
   }
 }
