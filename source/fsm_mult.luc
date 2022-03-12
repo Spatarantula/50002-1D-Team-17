@@ -1,0 +1,64 @@
+module fsm_mult (
+    input clk,  // clock
+    input rst,  // reset
+    output complete,
+    output passes
+) {
+  .clk(clk) {
+    .rst(rst) {
+      fsm state = {ZERO, ONE, TWO, THREE, FOUR, FIVE, COMPLETE};
+    }
+    dff pass(#INIT(0));
+  }
+
+  multiplier m;
+
+  always {
+    m.a = 0;
+    m.b = 0;
+
+    case(state.q) {
+      state.ZERO:
+        m.a = 10;
+        m.b = 2;
+        pass.d = pass.q & ~|(m.out ^ 16d20);
+        state.d = state.ONE;
+        complete = 0;
+      state.ONE:
+        m.a = 500;
+        m.b = 500;
+        pass.d = pass.q & ~|(m.out ^ -16d12144);
+        state.d = state.TWO;
+        complete = 0;
+      state.TWO:
+        m.a = -2;
+        m.b = 4;
+        pass.d = pass.q & ~|(m.out ^ -16d8);
+        state.d = state.THREE;
+        complete = 0;
+      state.THREE:
+        m.a = 2;
+        m.b = -4;
+        pass.d = pass.q & ~|(m.out ^ -16d8);
+        state.d = state.FOUR;
+        complete = 0;
+      state.FOUR:
+        m.a = -10;
+        m.b = -2;
+        pass.d = pass.q & ~|(m.out ^ 16d20);
+        state.d = state.FIVE;
+        complete = 0;
+      state.FIVE:
+        m.a = -500;
+        m.b = 500;
+        pass.d = pass.q & ~|(m.out ^ 16d12144);
+        state.d = state.COMPLETE;
+        complete = 0;
+      state.COMPLETE:
+        complete = 1;
+      default:
+        complete = 0;
+    }
+    passes = pass.q;
+  }
+}

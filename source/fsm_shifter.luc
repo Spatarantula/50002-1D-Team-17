@@ -1,0 +1,71 @@
+module fsm_shifter (
+    input clk,  // clock
+    input rst,  // reset
+    output complete,
+    output passes
+) {
+  .clk(clk) {
+    .rst(rst) {
+      fsm state = {ZERO, ONE, TWO, THREE, FOUR, FIVE, COMPLETE};
+    }
+    dff pass(#INIT(0));
+  }
+
+  shifter sh;
+
+  always {
+    sh.alufn = 0;
+    sh.a = 0;
+    sh.b = 0;
+
+    case(state.q) {
+      state.ZERO:
+        sh.alufn = 2b0;
+        sh.a = 10;
+        sh.b = 2;
+        pass.d = pass.q & ~|(sh.out ^ 16d20);
+        state.d = state.ONE;
+        complete = 0;
+      state.ONE:
+        sh.alufn = 2b10;
+        sh.a = 567;  
+        sh.b = 3;    
+        pass.d = pass.q & ~|(sh.out ^ -16d12144);
+        state.d = state.TWO;
+        complete = 0;
+      state.TWO:
+        sh.alufn = 2b1;
+        sh.a = 865;
+        sh.b = 4;
+        pass.d = pass.q & ~|(sh.out ^ -16d8);
+        state.d = state.THREE;
+        complete = 0;
+      state.THREE:
+        sh.alufn = 2b0;
+        sh.a = -10;
+        sh.b = 2;
+        pass.d = pass.q & ~|(sh.out ^ -16d8);
+        state.d = state.FOUR;
+        complete = 0;
+      state.FOUR:
+        sh.alufn = 2b10;
+        sh.a = -456;
+        sh.b = 3;
+        pass.d = pass.q & ~|(sh.out ^ 16d20);
+        state.d = state.FIVE;
+        complete = 0;
+      state.FIVE:
+        sh.alufn = 2b1;
+        sh.a = -678;
+        sh.b = 4;
+        pass.d = pass.q & ~|(sh.out ^ 16d12144);
+        state.d = state.COMPLETE;
+        complete = 1;
+      state.COMPLETE:
+        complete = 1;
+      default:
+        complete = 0;
+    }
+    passes = pass.q;
+  }
+}
