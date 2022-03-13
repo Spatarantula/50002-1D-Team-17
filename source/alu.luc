@@ -66,7 +66,7 @@ module alu (
     // connect the shifter nodes to the ALU
     shifterALU.alufn = alufn;
     shifterALU.a = a;
-    shifterALU.b = b[3:0];
+    shifterALU.b = b;
     
     // connect the multipler nodes to the ALU
     multiplierALU.a = a;
