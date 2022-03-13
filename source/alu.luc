@@ -34,43 +34,29 @@ module alu (
   ) {
   
   // instantiate all the components
-  adder adderALU; 
-  boolean booleanALU;
-  shifter shifterALU;
-  compare compareALU;
-  multiplier multiplierALU;
+  .a(a) {
+    .b(b) {
+      .alufn(alufn) {
+        adder adderALU; 
+        boolean booleanALU;
+        shifter shifterALU;
+      }
+      multiplier multiplierALU;
+    }
+  }
+  compare compareALU(.alufn(alufn));
    
   // temp variable to choose add/multiply
   sig mul_or_add[16];
   
   always {
-    // connect the adder nodes to ALU
-    adderALU.alufn = alufn;
-    adderALU.a = a;
-    adderALU.b = b;
     z = adderALU.z;
     v = adderALU.v;
     n = adderALU.n;
     
-    // connect the comparator nodes to the ALU
-    compareALU.alufn = alufn;
     compareALU.z = adderALU.z;
     compareALU.v = adderALU.v;
     compareALU.n = adderALU.n;
-    
-    // connect the boolean nodes to the ALU
-    booleanALU.alufn = alufn;
-    booleanALU.a = a;
-    booleanALU.b = b;
-    
-    // connect the shifter nodes to the ALU
-    shifterALU.alufn = alufn;
-    shifterALU.a = a;
-    shifterALU.b = b[3:0];
-    
-    // connect the multipler nodes to the ALU
-    multiplierALU.a = a;
-    multiplierALU.b = b;
     
     // choose whether to add or multiply
     case(alufn[1]) {
