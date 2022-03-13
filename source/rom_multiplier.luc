@@ -9,7 +9,6 @@
 * @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
 * @output num_cases  - the total number of test cases provided by this ROM
 */
-
 module rom_multiplier (
     input test_case[5],
 
