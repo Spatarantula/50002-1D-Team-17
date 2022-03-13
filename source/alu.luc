@@ -1,23 +1,50 @@
+/**
+* Performs addition/subtraction on two 16 bit values, following the lab 3 schematic
+*
+* @input a     - 16 bit input from reg A
+* @input b     - 16 bit input from reg B
+* @input alufn -  6 bit control signal
+*   00 0000: a+b,
+*   00 0001: a-b,
+*   00 0010: a*b,
+*   01 1000: a AND b,
+*   01 1110: a  OR b,
+*   01 0110: a XOR b,
+*   01 1010: output a,
+*   10 0000: a  << b,  (unsiged left shift)
+*   10 0001: a  >> b,  (unsiged right shift)
+*   10 0011: a >>> b, (siged/arithmetic right shift)
+*   11 0011: a == b,
+*   11 0101: a  < b,
+*   11 0111: a <= b,
+*
+* @output out  - 16 bit result of the operation performed
+* @output z    -  1 bit, set to true if the result is 0
+* @output v    -  1 bit, set to true if there is an overflow
+* @output n    -  1 bit, set to true if the result is negative
+*/
 module alu (
-    input a[16], //accepts 16 bit input from reg a and reg b
+    input a[16],
     input b[16],
-    input alufn[6], //accepts a 6 bit alufn control signal from control FSM
-    output out[16], //output a 16-bit value depending on the alufn control signal
-    output z[1], //output a 1-bit z signal
-    output v[1], //output a 1-bit v signal
-    output n[1] //output a 1-bit n signal
+    input alufn[6],
+    output out[16],
+    output z,
+    output v,
+    output n
   ) {
   
-  //instantiate all the components
+  // instantiate all the components
   adder adderALU; 
   boolean booleanALU;
   shifter shifterALU;
   compare compareALU;
-  multiplier multiplerALU;
-  sig mul_or_add[16];   //temp variable to choose add/multiply
+  multiplier multiplierALU;
+   
+  // temp variable to choose add/multiply
+  sig mul_or_add[16];
   
   always {
-    //connect the adder nodes to ALU
+    // connect the adder nodes to ALU
     adderALU.alufn = alufn;
     adderALU.a = a;
     adderALU.b = b;
@@ -25,42 +52,48 @@ module alu (
     v = adderALU.v;
     n = adderALU.n;
     
-    //connect the comparator nodes to the ALU
+    // connect the comparator nodes to the ALU
     compareALU.alufn = alufn;
     compareALU.z = adderALU.z;
     compareALU.v = adderALU.v;
     compareALU.n = adderALU.n;
     
-    //connect the boolean nodes to the ALU
+    // connect the boolean nodes to the ALU
     booleanALU.alufn = alufn;
     booleanALU.a = a;
     booleanALU.b = b;
     
-    //connect the shifter nodes to the ALU
+    // connect the shifter nodes to the ALU
     shifterALU.alufn = alufn;
     shifterALU.a = a;
     shifterALU.b = b[3:0];
     
-    //connect the multipler nodes to the ALU
-    multiplerALU.a = a;
-    multiplerALU.b = b;
+    // connect the multipler nodes to the ALU
+    multiplierALU.a = a;
+    multiplierALU.b = b;
     
-    //choose whether to add or multiply
-    case(alufn[1]){
-      1b0 : mul_or_add = adderALU.out; 
-      1b1 : mul_or_add = multiplerALU.out;
-      default : mul_or_add = 16h0;
+    // choose whether to add or multiply
+    case(alufn[1]) {
+      1b0:
+        mul_or_add = adderALU.out;
+      1b1:
+        mul_or_add = multiplierALU.out;
+      default:
+        mul_or_add = 16h0;
     }
     
-    //choose one of the functions of the ALU using ALUFN
-    case(alufn[5:4]){
-      b00 : out = mul_or_add;
-      b01 : out = booleanALU.out;
-      b10 : out = shifterALU.out;
-      b11 : out = compareALU.out;
-      default : out = 16b0;
+    // choose one of the functions of the ALU using the top two bits of the ALUFN
+    case(alufn[5:4]) {
+      2b00:
+        out = mul_or_add;
+      2b01:
+        out = booleanALU.out;
+      2b10:
+        out = shifterALU.out;
+      2b11:
+        out = compareALU.out;
+      default:
+        out = 16b0;
     }
-    
-    
   }
 }
