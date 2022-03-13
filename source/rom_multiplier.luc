@@ -1,0 +1,35 @@
+/**
+* ROM containing the test cases for the shifter
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
+* @output num_cases  - the total number of test cases provided by this ROM
+*/
+
+module rom_multiplier (
+    input test_case[5],
+
+    output a[16],
+    output b[16],
+    output exp_out[16],
+    output exp_zvn[3],
+    output num_cases[5]
+  ) {
+
+  const TEST_A = {16d10, 16d500, -16d2, 16d2, -16d10, -16d500};
+  const TEST_B = {16d2, 16d500, 16d4, -16d4, -16d2, 16d500};
+  const EXP_OUT = {16d20, -16d12144, -16d8, -16d8, 16d20, 16d12144};
+  const EXP_ZVN = {3b000, 3b000, 3b000, 3b001, 3b001, 3b100};
+
+  always {
+    num_cases = 5d6;
+    a = TEST_A[test_case];
+    b = TEST_B[test_case];
+    exp_out = EXP_OUT[test_case];
+    exp_zvn = EXP_ZVN[test_case];
+  }
+}
