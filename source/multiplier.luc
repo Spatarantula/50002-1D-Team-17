@@ -1,3 +1,11 @@
+/**
+* Performs multiplication on two 16 bit values
+*
+* @input a     - 16 bit input from reg A
+* @input b     - 16 bit input from reg B
+*
+* @output out  - 16 bit result of the mulitplication
+*/
 module multiplier (
     input a[16],
     input b[16],
