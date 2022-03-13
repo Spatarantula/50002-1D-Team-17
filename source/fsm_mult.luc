@@ -1,64 +1,78 @@
+/**
+* FSM Module that tests the multiplier with hard coded test cases and outputs
+*
+* @input clk       - the default clock input
+* @input rst       - the default reset input
+*
+* @output complete - 1 bit output to signify that testing is complete
+* @output cases    - 6 bit output to signify the result of each test case
+*/
 module fsm_mult (
-    input clk,  // clock
-    input rst,  // reset
+    input clk,
+    input rst,
     output complete,
-    output passes
+    output cases[6]
 ) {
   .clk(clk) {
     .rst(rst) {
-      fsm state = {ZERO, ONE, TWO, THREE, FOUR, FIVE, COMPLETE};
+      fsm test_case = {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, COMPLETE};
     }
-    dff pass(#INIT(0));
   }
-
-  multiplier m;
+  
+  // creating a test signal which can be tied to the @output cases
+  sig test[6];
+  multiplier mult;
 
   always {
-    m.a = 0;
-    m.b = 0;
+    complete = 0;
+    mult.a = 0;
+    mult.b = 0;
 
-    case(state.q) {
-      state.ZERO:
-        m.a = 10;
-        m.b = 2;
-        pass.d = pass.q & ~|(m.out ^ 16d20);
-        state.d = state.ONE;
-        complete = 0;
-      state.ONE:
-        m.a = 500;
-        m.b = 500;
-        pass.d = pass.q & ~|(m.out ^ -16d12144);
-        state.d = state.TWO;
-        complete = 0;
-      state.TWO:
-        m.a = -2;
-        m.b = 4;
-        pass.d = pass.q & ~|(m.out ^ -16d8);
-        state.d = state.THREE;
-        complete = 0;
-      state.THREE:
-        m.a = 2;
-        m.b = -4;
-        pass.d = pass.q & ~|(m.out ^ -16d8);
-        state.d = state.FOUR;
-        complete = 0;
-      state.FOUR:
-        m.a = -10;
-        m.b = -2;
-        pass.d = pass.q & ~|(m.out ^ 16d20);
-        state.d = state.FIVE;
-        complete = 0;
-      state.FIVE:
-        m.a = -500;
-        m.b = 500;
-        pass.d = pass.q & ~|(m.out ^ 16d12144);
-        state.d = state.COMPLETE;
-        complete = 0;
-      state.COMPLETE:
+    case(test_case.q) {
+      test_case.ZERO:
+        test = 6b0;
+      test_case.ONE:
+        mult.a = 10;
+        mult.b = 2;
+        test = test;
+        test[0] = ~|(mult.out ^ 16d20);
+        test_case.d = test_case.ONE;
+      test_case.TWO:
+        mult.a = 500;
+        mult.b = 500;
+        test = test;
+        test[1] = ~|(mult.out ^ -16d12144);
+        test_case.d = test_case.TWO;
+      test_case.THREE:
+        mult.a = -2;
+        mult.b = 4;
+        test = test;
+        test[2] = ~|(mult.out ^ -16d8);
+        test_case.d = test_case.THREE;
+      test_case.FOUR:
+        mult.a = 2;
+        mult.b = -4;
+        test = test;
+        test[3] = ~|(mult.out ^ -16d8);
+        test_case.d = test_case.FOUR;
+      test_case.FIVE:
+        mult.a = -10;
+        mult.b = -2;
+        test = test;
+        test[4] = ~|(mult.out ^ 16d20);
+        test_case.d = test_case.FIVE;
+      test_case.SIX:
+        mult.a = -500;
+        mult.b = 500;
+        test = test;
+        test[5] = ~|(mult.out ^ 16d12144);
+        test_case.d = test_case.COMPLETE;
+      test_case.COMPLETE:
+        test = test;
         complete = 1;
-      default:
-        complete = 0;
+      default:           // this should never happen, if it does something has gone very wrong
+        test = 0;
     }
-    passes = pass.q;
+    cases = test;
   }
 }

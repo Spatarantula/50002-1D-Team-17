@@ -1,71 +1,85 @@
+/**
+* FSM Module that tests the shifter with hard coded test cases and outputs
+*
+* @input clk       - the default clock input
+* @input rst       - the default reset input
+*
+* @output complete - 1 bit output to signify that testing is complete
+* @output cases    - 6 bit output to signify the result of each test case
+*/
 module fsm_shifter (
-    input clk,  // clock
-    input rst,  // reset
+    input clk,
+    input rst,
     output complete,
-    output passes
+    output cases[6]
 ) {
   .clk(clk) {
     .rst(rst) {
-      fsm state = {ZERO, ONE, TWO, THREE, FOUR, FIVE, COMPLETE};
+      fsm test_case = {ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, COMPLETE};
     }
-    dff pass(#INIT(0));
   }
 
+  // creating a test signal which can be tied to the @output cases
+  sig test[6];
   shifter sh;
 
   always {
+    complete = 0;
     sh.alufn = 0;
     sh.a = 0;
     sh.b = 0;
 
-    case(state.q) {
-      state.ZERO:
+    case(test_case.q) {
+      test_case.ZERO:
+        test = 6b0;
+      test_case.ONE:
         sh.alufn = 2b0;
         sh.a = 10;
         sh.b = 2;
-        pass.d = pass.q & ~|(sh.out ^ 16d20);
-        state.d = state.ONE;
-        complete = 0;
-      state.ONE:
+        test = test;
+        test[0] = ~|(sh.out ^ 16d20);
+        test_case.d = test_case.ONE;
+      test_case.TWO:
         sh.alufn = 2b10;
         sh.a = 567;  
         sh.b = 3;    
-        pass.d = pass.q & ~|(sh.out ^ -16d12144);
-        state.d = state.TWO;
-        complete = 0;
-      state.TWO:
+        test = test;
+        test[1] = ~|(sh.out ^ -16d12144);
+        test_case.d = test_case.TWO;
+      test_case.THREE:
         sh.alufn = 2b1;
         sh.a = 865;
         sh.b = 4;
-        pass.d = pass.q & ~|(sh.out ^ -16d8);
-        state.d = state.THREE;
-        complete = 0;
-      state.THREE:
+        test = test;
+        test[2] = ~|(sh.out ^ -16d8);
+        test_case.d = test_case.THREE;
+      test_case.FOUR:
         sh.alufn = 2b0;
         sh.a = -10;
         sh.b = 2;
-        pass.d = pass.q & ~|(sh.out ^ -16d8);
-        state.d = state.FOUR;
-        complete = 0;
-      state.FOUR:
+        test = test;
+        test[3] = ~|(sh.out ^ -16d8);
+        test_case.d = test_case.FOUR;
+      test_case.FIVE:
         sh.alufn = 2b10;
         sh.a = -456;
         sh.b = 3;
-        pass.d = pass.q & ~|(sh.out ^ 16d20);
-        state.d = state.FIVE;
-        complete = 0;
-      state.FIVE:
+        test = test;
+        test[4] = ~|(sh.out ^ 16d20);
+        test_case.d = test_case.FIVE;
+      test_case.SIX:
         sh.alufn = 2b1;
         sh.a = -678;
         sh.b = 4;
-        pass.d = pass.q & ~|(sh.out ^ 16d12144);
-        state.d = state.COMPLETE;
+        test = test;
+        test[5] = ~|(sh.out ^ 16d12144);
+        test_case.d = test_case.COMPLETE;
+      test_case.COMPLETE:
+        test = test;
         complete = 1;
-      state.COMPLETE:
-        complete = 1;
-      default:
-        complete = 0;
+      default:           // this should never happen, if it does something has gone very wrong
+        test = 0;
     }
-    passes = pass.q;
+    cases = test;
   }
 }
