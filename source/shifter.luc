@@ -6,7 +6,7 @@
 * @input alufn -  6 bit control signal
 *   xx xx00: a  << b,  (unsiged left shift)
 *   xx xx01: a  >> b,  (unsiged right shift)
-*   xx xx10: a >>> b, (siged/arithmetic right shift)
+*   xx xx11: a >>> b, (siged/arithmetic right shift)
 *
 * @output out  - 16 bit result of the bitshift operation performed
 */
@@ -23,7 +23,7 @@ module shifter (
         out = a << b[3:0];  // unsiged left shift
       2b01:
         out = a >> b[3:0];  // unsiged right shift
-      2b10:
+      2b11:
         out = a >>> b[3:0]; // siged/arithmetic right shift
       default:
         out = 16b0;

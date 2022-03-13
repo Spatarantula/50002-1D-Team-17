@@ -13,7 +13,7 @@
 *   01 1010: output a,
 *   10 0000: a  << b,  (unsiged left shift)
 *   10 0001: a  >> b,  (unsiged right shift)
-*   10 0010: a >>> b, (siged/arithmetic right shift)
+*   10 0011: a >>> b, (siged/arithmetic right shift)
 *   11 0011: a == b,
 *   11 0101: a  < b,
 *   11 0111: a <= b,
@@ -38,7 +38,7 @@ module alu (
   boolean booleanALU;
   shifter shifterALU;
   compare compareALU;
-  multiplier multiplerALU;
+  multiplier multiplierALU;
    
   // temp variable to choose add/multiply
   sig mul_or_add[16];
@@ -69,15 +69,15 @@ module alu (
     shifterALU.b = b[3:0];
     
     // connect the multipler nodes to the ALU
-    multiplerALU.a = a;
-    multiplerALU.b = b;
+    multiplierALU.a = a;
+    multiplierALU.b = b;
     
     // choose whether to add or multiply
     case(alufn[1]) {
       1b0:
         mul_or_add = adderALU.out;
       1b1:
-        mul_or_add = multiplerALU.out;
+        mul_or_add = multiplierALU.out;
       default:
         mul_or_add = 16h0;
     }
