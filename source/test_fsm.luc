@@ -25,7 +25,8 @@ module test_fsm (
     // rom_boolean    rom2;
     // rom_compare    rom3;
     
-    rom_shifter    rom1; // need to replace these temp shifter roms w/ your own rom!
+    rom_adder1     rom1; // need to replace these temp shifter roms w/ your own rom!\
+    rom_adder2     rom6;
     rom_shifter    rom2;
     rom_shifter    rom3;
     rom_multiplier rom4;

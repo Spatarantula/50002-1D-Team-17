@@ -15,7 +15,6 @@ module rom_adder1 (
   //         addition                   subtraction                 z=1                                n check
   const A = {16hFFFF, 16h00FF, 16h00FF, 16hFFFF, 16h00FF, 16h00FF, 16h00FF, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
   
-  //all the values that will be fed into the adder through reg b
   //         addition                   subtraction                 z=1                                n check
   const B = {16hFFFF, 16h01FF, 16hFFFF, 16hFFFE, 16h01FF, 16hFFFF, 16hFF01, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
   
@@ -44,4 +43,5 @@ module rom_adder1 (
     exp_z = EXPECTED_OUTPUT_Z[test_case];
     exp_v = EXPECTED_OUTPUT_V[test_case];
     exp_n = EXPECTED_OUTPUT_N[test_case];
+  }
 }
