@@ -13,6 +13,10 @@
 *   01 1110: a  OR b,
 *   01 0110: a XOR b,
 *   01 1010: output a,
+*   01 0111: a NAND b,
+*   01 0001: a NOR b,
+*   01 1001: a XNOR b,
+*   01 1100: return b,
 *   10 0000: a  << b,  (unsiged left shift)
 *   10 0001: a  >> b,  (unsiged right shift)
 *   10 0011: a >>> b,  (siged/arithmetic right shift)

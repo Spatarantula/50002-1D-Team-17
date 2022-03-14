@@ -4,6 +4,9 @@
 * @input a     - 16 bit input from reg A
 * @input b     - 16 bit input from reg B
 * @input alufn -  6 bit alufn control signal
+*   xx xx00: a*b,
+*   xx xx01: a/b,
+*   xx xx10: a%b,
 *
 * @output out  - 16 bit result of the mulitplication
 */

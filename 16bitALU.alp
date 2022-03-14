@@ -14,6 +14,7 @@
     <src>test_fsm.luc</src>
     <src>rom_adder2.luc</src>
     <component>reset_conditioner.luc</component>
+    <src>rom_boolean.luc</src>
     <src>adder.luc</src>
     <src>compare.luc</src>
     <src>rom_multiplier2.luc</src>

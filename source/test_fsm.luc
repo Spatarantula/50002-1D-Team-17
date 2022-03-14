@@ -21,9 +21,9 @@ module test_fsm (
   }
   
   .test_case(counter.q[30:26]) {    
-    rom_adder1      rom1; // need to replace these temp shifter roms w/ your own rom!\
+    rom_adder1      rom1;
     rom_adder2      rom2;
-    rom_adder1      rom3; // rom_boolean    rom3;
+    rom_boolean     rom3;
     rom_comparator  rom4;
     rom_multiplier1 rom5;
     rom_multiplier2 rom6;
