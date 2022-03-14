@@ -177,25 +177,25 @@ module test_fsm (
       case(unit) {
         0:
           test_unit.d = test_unit.ADDER2;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[13:0];
         1:
           test_unit.d = test_unit.BOOLEAN;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[7:0];
         2:
           test_unit.d = test_unit.COMPARE;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[7:0];
         3:
           test_unit.d = test_unit.MULTIPLIER1;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[15:0];
         4:
           test_unit.d = test_unit.MULTIPLIER2;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[12:0];
         5:
           test_unit.d = test_unit.SHIFTER;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[5:0];
         6:
           test_unit.d = test_unit.DONE;
-          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+          unit_passed_s[unit] = &test_cases_passed_s[5:0];
         default:
           unit_passed_s = 0;
       }
