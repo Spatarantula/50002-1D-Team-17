@@ -1,0 +1,51 @@
+/**
+* ROM containing the test cases for the boolean
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output alufn      -  6 bit alufn control signal for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
+* @output num_cases  - the total number of test cases provided by this ROM
+*/
+module rom_boolean (
+    input test_case[5],
+
+    output a[16],
+    output b[16],
+    output alufn[6],
+    output exp_out[16],
+    output exp_z,
+    output exp_v,
+    output exp_n,
+    output num_cases[5]
+  ) {
+
+  const AND = 6b011000;
+  const OR = 6b011110;
+  const XOR = 6b010110;
+  const A = 6b011010;
+  const NAND = 6b010111;
+  const NOR = 6b010001; 
+  const XNOR = 6b011001;
+  const B = 6b011100;
+
+  const TEST_A = {16b1111111100000000, 16b1111111100000000, 16b1111111100000000, 16b1111111100000000, 16b1111111100000000, 16b1111111100000000, 16b1111111100000000, 16b1111111100000000};
+  const TEST_B = {16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000};
+  const ALUFN = {AND, OR, XOR, A, NAND, NOR, XNOR, B};
+  const EXP_OUT = {16b1111000000000000, 16b1111111111110000, 16b0000111111110000, 16b1111111100000000, 16b000011111111, 16b0000000000001111, 16b1111000000001111, 16b1111000011110000};
+  const EXP_ZVN = {3b011, 3b011, 3b011, 3b011, 3b011, 3b011,3b011, 3b011};
+
+  always {
+    num_cases = 5d8; 
+    a = TEST_A[test_case];
+    b = TEST_B[test_case];
+    alufn = ALUFN[test_case];
+    exp_out = EXP_OUT[test_case];
+    exp_z = EXP_ZVN[test_case][2];
+    exp_v = EXP_ZVN[test_case][1];
+    exp_n = EXP_ZVN[test_case][0];
+  }
+}
