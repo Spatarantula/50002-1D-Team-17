@@ -16,6 +16,7 @@ module shifter (
     input alufn[6],
     output out[16]
   ) {
+  sig result[3];
   
   always {
     result[0] = a << b;          // unsigned left shift 
