@@ -3,6 +3,7 @@
   <files>
     <src>multiplier.luc</src>
     <src>shifter.luc</src>
+    <src>rom_adder1.luc</src>
     <src>rom_multiplier.luc</src>
     <component>counter.luc</component>
     <component>decoder.luc</component>
@@ -10,6 +11,7 @@
     <src top="true">au_top.luc</src>
     <src>alu.luc</src>
     <src>test_fsm.luc</src>
+    <src>rom_adder2.luc</src>
     <component>reset_conditioner.luc</component>
     <src>adder.luc</src>
     <src>compare.luc</src>
