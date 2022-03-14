@@ -90,6 +90,7 @@ module test_fsm (
         if(counter.q[30:26] == rom1.num_cases) {
           unit_passed_s.d[0] = &(test_cases_passed_s.q[4d13:0]); // hardcoded values of num_cases(14) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.ADDER2;
         }
       test_unit.ADDER2:
@@ -104,6 +105,7 @@ module test_fsm (
         if(counter.q[30:26] == rom2.num_cases) {
           unit_passed_s.d[1] = &test_cases_passed_s.q[4d7:0]; // hardcoded values of num_cases(8) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
       test_unit.BOOLEAN:
@@ -118,6 +120,7 @@ module test_fsm (
         if(counter.q[30:26] == rom3.num_cases) {
           unit_passed_s.d[2] = &test_cases_passed_s.q[4d7:0]; // hardcoded values of num_cases(8) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.COMPARE;
         }
       test_unit.COMPARE:
@@ -132,6 +135,7 @@ module test_fsm (
         if(counter.q[30:26] == rom4.num_cases) {
           unit_passed_s.d[3] = &test_cases_passed_s.q[4d15:0]; // hardcoded values of num_cases(16) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.MULTIPLIER1;
         }
       test_unit.MULTIPLIER1:
@@ -146,6 +150,7 @@ module test_fsm (
         if(counter.q[30:26] == rom5.num_cases) {
           unit_passed_s.d[4] = &test_cases_passed_s.q[4d12:0]; // hardcoded values of num_cases(13) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.MULTIPLIER2;
         }
       test_unit.MULTIPLIER2:
@@ -160,6 +165,7 @@ module test_fsm (
         if(counter.q[30:26] == rom6.num_cases) {
           unit_passed_s.d[5] = &test_cases_passed_s.q[4d5:0]; // hardcoded values of num_cases(6) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.SHIFTER;
         }
       test_unit.SHIFTER:
@@ -174,6 +180,7 @@ module test_fsm (
         if(counter.q[30:26] == rom7.num_cases) {
           unit_passed_s.d[6] = &test_cases_passed_s.q[4d5:0]; // hardcoded values of num_cases(6) - 1
           counter.d = 0;
+          test_cases_passed_s.d = 0;
           test_unit.d = test_unit.DONE;
         }
       test_unit.DONE:
