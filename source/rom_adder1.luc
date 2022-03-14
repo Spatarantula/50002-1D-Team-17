@@ -27,26 +27,26 @@ module rom_adder1 (
 
   // 14 test cases for normal addition, normal subtraction, checking for accuracy of z and n output
   //         addition                   subtraction                 z=1                                n check
-  const A = {16hFFFF, 16h00FF, 16h00FF, 16hFFFF, 16h00FF, 16h00FF, 16h00FF, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
+  const A = {16hFFFF, 16h00FF, \ 16h00FF, 16hFFFF, 16h00FF, 16h00FF, \ 16h00FF, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
   
   //         addition                   subtraction                 z=1                                n check
-  const B = {16hFFFF, 16h01FF, 16hFFFF, 16hFFFE, 16h01FF, 16hFFFF, 16hFF01, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
+  const B = {16hFFFF, 16h01FF, \ 16hFFFF, 16hFFFE, 16h01FF, 16hFFFF, \ 16hFF01, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
   
   // all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
   //                    addition       subtraction    z=1                 n check
-  const ALUFN_SIGNAL = {6h0, 6h0, 6h0, 6h1, 6h1, 6h1, 6h0, 6h0, 6h1, 6h1, 6h0, 6h0, 6h1, 6h1};
+  const ALUFN_SIGNAL = {6h0, 6h0, \ 6h0, 6h1, 6h1, 6h1, \ 6h0, 6h0, 6h1, 6h1, \ 6h0, 6h0, 6h1, 6h1};
   
   //                           addition                   subtraction                 z=1                                n check
-  const EXPECTED_OUTPUT_SUM = {16hFFFE, 16h02FE, 16h00FE, 16h0001, 16hFF00, 16h0100, 16h0000, 16h0000, 16h0000, 16h0000, 16hFFFC, 16h03FE, 16h0004, 16hFF00};
+  const EXPECTED_OUTPUT_SUM = {16hFFFE, 16h02FE, \ 16h00FE, 16h0001, 16hFF00, 16h0100, \ 16h0000, 16h0000, 16h0000, 16h0000, \ 16hFFFC, 16h03FE, 16h0004, 16hFDF1};
   
   //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_Z = {1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b1, 1b1, 1b1, 1b1, 1b0, 1b0, 1b0, 1b0};
+  const EXPECTED_OUTPUT_Z = {1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b1, 1b1, 1b1, 1b1, \ 1b0, 1b0, 1b0, 1b0};
   
   //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_V = {1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0};
+  const EXPECTED_OUTPUT_V = {1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0};
   
   //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_N = {1b1, 1b0, 1b0, 1b0, 1b1, 1b0, 1b0, 1b0, 1b0, 1b0, 1b1, 1b0, 1b0, 1b1};
+  const EXPECTED_OUTPUT_N = {1b1, 1b0, \ 1b0, 1b0, 1b1, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b1, 1b0, 1b0, 1b1};
   
   always {
     num_cases = 5d14;

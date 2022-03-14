@@ -38,7 +38,7 @@ module multiplier (
           out = 16b0;
         }
         else {
-          out = a-(a/b)*a;
+          out = a-(a/b)*b;
         }
       default:
         out = 16b0;

@@ -30,11 +30,11 @@ module rom_comparator (
   const CMPLT = 6b110101;
   const CMPLE = 6b110111;
   
-  const TEST_A  = { 16d567, -16d885, 16d30, -16d32500, 16d670, \   16d210, -16d500, 16d120, -16d100, 16d670, 16d00,  \   16d32500, 16d865, 16d10, -16d100, 16d670};
-  const TEST_B  = {-16d210, -16d460, 16d30, 16d300, 16d678,    \  -16d210, -16d500, 16d120, 16d100, 16d678, -16d00,  \  -16d300, -16d500, 16d10, 16d100, 16d678};
-  const ALUFN   = { CMPLE, CMPLE, CMPLE, CMPLE, CMPLE,         \   CMPEQ, CMPEQ, CMPEQ, CMPEQ, CMPEQ, CMPEQ,         \   CMPLT, CMPLT, CMPLT, CMPLT, CMPLT};
-  const EXP_OUT = { 16h00, 16h01, 16h01, 16h01, 16h01,         \   16h00, 16h01, 16h01, 16h00, 16h00, 16h01,         \   16h00, 16h00, 16h00, 16h01, 16h01};
-  const EXP_ZVN = { 3b000, 3b001, 3b100, 3b010, 3b000,         \   3b001, 3b000, 3b000, 3b000, 3b001, 3b100,         \   3b011, 3b000, 3b100, 3b001, 3b001};
+  const TEST_A  = { 16d567, -16d885, 16d30, -16d32500, 16d670, \   16d210, -16d500, 16d120, -16d100, 16d670,  16d00,  \   16d32500,  16d865, 16d10, -16d100, 16d670};
+  const TEST_B  = {-16d210, -16d460, 16d30, 16d300, 16d678,    \  -16d210, -16d500, 16d120,  16d100, 16d678, -16d00,  \    -16d300, -16d500, 16d10,  16d100, 16d678};
+  const ALUFN   = { CMPLE, CMPLE, CMPLE, CMPLE, CMPLE,         \    CMPEQ,   CMPEQ,  CMPEQ,   CMPEQ,  CMPEQ,  CMPEQ,  \      CMPLT,   CMPLT, CMPLT,   CMPLT,  CMPLT};
+  const EXP_OUT = { 16h00, 16h01, 16h01, 16h01, 16h01,         \    16h00,   16h01,  16h01,   16h00,  16h00,  16h01,  \      16h00,   16h00, 16h00,   16h01,  16h01};
+  const EXP_ZVN = { 3b000, 3b001, 3b100, 3b010, 3b001,         \    3b000,   3b100,  3b100,   3b001,  3b001,  3b100,  \      3b011,   3b000, 3b100,   3b001,  3b001};
 
   always {
     // Refer to Testcases via test_case input as ROM address
