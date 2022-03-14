@@ -42,7 +42,7 @@ module rom_boolean (
   const EXP_ZVN = {3b0, 3b0, 3b0, 3b0, 3b0, 3b0, 3b0, 3b0};
 
   always {
-    num_cases = 5d8; 
+    num_cases = 5d8;
     a = TEST_A[test_case];
     b = TEST_B[test_case];
     alufn = ALUFN[test_case];

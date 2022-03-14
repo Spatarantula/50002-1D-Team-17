@@ -21,9 +21,20 @@ module au_top_0 (
   
   reg rst;
   
+  wire [7-1:0] M_tester_unit_passed;
+  wire [16-1:0] M_tester_test_cases_passed;
+  wire [1-1:0] M_tester_complete;
+  test_fsm_1 tester (
+    .clk(clk),
+    .rst(rst),
+    .error(1'h0),
+    .unit_passed(M_tester_unit_passed),
+    .test_cases_passed(M_tester_test_cases_passed),
+    .complete(M_tester_complete)
+  );
   wire [1-1:0] M_reset_cond_out;
   reg [1-1:0] M_reset_cond_in;
-  reset_conditioner_1 reset_cond (
+  reset_conditioner_2 reset_cond (
     .clk(clk),
     .in(M_reset_cond_in),
     .out(M_reset_cond_out)
@@ -37,5 +48,9 @@ module au_top_0 (
     io_led = 24'h000000;
     io_seg = 8'hff;
     io_sel = 4'hf;
+    io_led[16+0+6-:7] = M_tester_unit_passed;
+    io_led[16+7+0-:1] = M_tester_complete;
+    io_led[8+7-:8] = M_tester_test_cases_passed[8+7-:8];
+    io_led[0+7-:8] = M_tester_test_cases_passed[0+7-:8];
   end
 endmodule
