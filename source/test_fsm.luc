@@ -52,6 +52,9 @@ module test_fsm (
 
   sig unit_passed_s[7];
   sig test_cases_passed_s[16];
+
+  // used to give incorrect ALU output when the error input is high
+  sig alu_out[16];
     
   alu test_alu(.a(a), .b(b), .alufn(alufn));
 
@@ -187,7 +190,12 @@ module test_fsm (
         complete = 1;
     }
 
-    test_cases_passed_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
+    alu_out = test_alu.out;
+    
+    if(error == 1)
+      alu_out = ~alu_out;
+      
+    test_cases_passed_s[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
 
     test_cases_passed = test_cases_passed_s;
     unit_passed = unit_passed_s;
