@@ -13,7 +13,7 @@
 *   01 1010: output a,
 *   10 0000: a  << b,  (unsiged left shift)
 *   10 0001: a  >> b,  (unsiged right shift)
-*   10 0011: a >>> b, (siged/arithmetic right shift)
+*   10 0011: a >>> b,  (siged/arithmetic right shift)
 *   11 0011: a == b,
 *   11 0101: a  < b,
 *   11 0111: a <= b,
