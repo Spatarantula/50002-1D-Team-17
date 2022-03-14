@@ -22,8 +22,8 @@ module test_fsm (
     .rst(rst) {
       fsm test_unit = {ADDER1, ADDER2, BOOLEAN, COMPARE, MULTIPLIER1, MULTIPLIER2, SHIFTER, DONE};
       dff counter[31](#INIT(0)); // the high 5 bits of this are used as a counter for test cases
-      // dff unit_passed_s[7](#INIT(0));
-      // dff test_cases_passed_s[16](#INIT(0));
+      dff unit_passed_s[7](#INIT(0));
+      dff test_cases_passed_s[16](#INIT(0));
     }
   }
   
@@ -48,8 +48,6 @@ module test_fsm (
   sig exp_v;
   sig exp_n;
 
-  sig unit_passed_s[7];
-  sig test_cases_passed_s[16];
   sig max_test_cases[5];
   sig unit[3];
 
@@ -87,7 +85,7 @@ module test_fsm (
         exp_z = rom1.exp_z;
         exp_v = rom1.exp_v;
         exp_n = rom1.exp_n;
-        max_test_cases = rom1.num_cases-1;
+        max_test_cases = rom1.num_cases;
         unit = 0;
       test_unit.ADDER2:
         a = rom2.a;
@@ -97,7 +95,7 @@ module test_fsm (
         exp_z = rom2.exp_z;
         exp_v = rom2.exp_v;
         exp_n = rom2.exp_n;
-        max_test_cases = rom2.num_cases-1;
+        max_test_cases = rom2.num_cases;
         unit = 1;
       test_unit.BOOLEAN:
         a = rom3.a;
@@ -107,7 +105,7 @@ module test_fsm (
         exp_z = rom3.exp_z;
         exp_v = rom3.exp_v;
         exp_n = rom3.exp_n;
-        max_test_cases = rom3.num_cases-1;
+        max_test_cases = rom3.num_cases;
         unit = 2;
       test_unit.COMPARE:
         a = rom4.a;
@@ -117,7 +115,7 @@ module test_fsm (
         exp_z = rom4.exp_z;
         exp_v = rom4.exp_v;
         exp_n = rom4.exp_n;
-        max_test_cases = rom4.num_cases-1;
+        max_test_cases = rom4.num_cases;
         unit = 3;
       test_unit.MULTIPLIER1:
         a = rom5.a;
@@ -127,7 +125,7 @@ module test_fsm (
         exp_z = rom5.exp_z;
         exp_v = rom5.exp_v;
         exp_n = rom5.exp_n;
-        max_test_cases = rom5.num_cases-1;
+        max_test_cases = rom5.num_cases;
         unit = 4;
       test_unit.MULTIPLIER2:
         a = rom6.a;
@@ -137,7 +135,7 @@ module test_fsm (
         exp_z = rom6.exp_z;
         exp_v = rom6.exp_v;
         exp_n = rom6.exp_n;
-        max_test_cases = rom6.num_cases-1;
+        max_test_cases = rom6.num_cases;
         unit = 5;
       test_unit.SHIFTER:
         a = rom7.a;
@@ -147,7 +145,7 @@ module test_fsm (
         exp_z = rom7.exp_z;
         exp_v = rom7.exp_v;
         exp_n = rom7.exp_n;
-        max_test_cases = rom7.num_cases-1;
+        max_test_cases = rom7.num_cases;
         unit = 6;
       test_unit.DONE:
         // fix the counter to 0 and mark the testing as completed
@@ -165,42 +163,48 @@ module test_fsm (
     if(error == 1)
       alu_out = ~alu_out;
       
-    test_cases_passed_s[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
+    test_cases_passed_s.d[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
 
-    test_cases_passed = test_cases_passed_s;
+    test_cases_passed = test_cases_passed_s.q;
 
     // if all the test cases of a ROM have been checked
     // determine if all of them were a pass and set the corresponding
     // unit_passed flag accordingly. Advance the FSM to the next state
+    unit_passed = unit_passed_s.q;
     if(counter.q[30:26] == max_test_cases) {
       counter.d = 0;
       case(unit) {
         0:
           test_unit.d = test_unit.ADDER2;
-          unit_passed_s[unit] = &test_cases_passed_s[13:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[13:0];
         1:
           test_unit.d = test_unit.BOOLEAN;
-          unit_passed_s[unit] = &test_cases_passed_s[7:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
         2:
           test_unit.d = test_unit.COMPARE;
-          unit_passed_s[unit] = &test_cases_passed_s[7:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
         3:
           test_unit.d = test_unit.MULTIPLIER1;
-          unit_passed_s[unit] = &test_cases_passed_s[15:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[15:0];
         4:
           test_unit.d = test_unit.MULTIPLIER2;
-          unit_passed_s[unit] = &test_cases_passed_s[12:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[12:0];
         5:
           test_unit.d = test_unit.SHIFTER;
-          unit_passed_s[unit] = &test_cases_passed_s[5:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
         6:
           test_unit.d = test_unit.DONE;
-          unit_passed_s[unit] = &test_cases_passed_s[5:0];
+          test_cases_passed_s.d = 0;
+          unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
         default:
-          unit_passed_s = 0;
+          unit_passed_s.d = unit_passed_s.q;
       }
-      test_cases_passed_s = 0;
     }
-    unit_passed = unit_passed_s;
   }
 }
