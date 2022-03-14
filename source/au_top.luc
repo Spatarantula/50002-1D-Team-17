@@ -68,10 +68,5 @@ module au_top (
           state.d = state.START;
         }
     }
-    else {
-      unit_passed = 0;
-      test_cases_passed = 0;
-      complete = 0;
-    }
   }
 }
