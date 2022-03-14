@@ -1,0 +1,53 @@
+module testFSM (
+    input clk,  // clock
+    input rst,  // reset
+    
+    input length,
+    
+    output led_out[2]
+  )
+  {
+  
+  counter slowclock(#SIZE(1),#DIV(27), .clk(clk), .rst(rst));
+  
+  .clk(slowclock.value) {
+    .rst(rst) {
+      fsm testState = {CALC, PASS, FAIL, COMPLETE};
+    }
+    dff current[$clog2(length)](#INIT(0)); // stores current address. $clog2(<put size of testROM here>)
+  }
+  
+  testAdder rom; // hardcode which ROM to use (EDIT THIS)
+  
+  always {
+  
+    rom.test = current.q; // read from ROM
+    length = rom.length;
+    
+    case(testState.q){
+      testState.CALC:
+        led_out = b00; // signal for calculating...
+        if (rom.out == 0){testState.d = testState.FAIL;}
+        if (rom.out == 1){testState.d = testState.PASS;}
+      
+      testState.FAIL:
+        led_out = b01; // signal for failed (need to press reset)
+        testState.d = testState.CALC;
+        
+      testState.PASS:
+        led_out = b10; // signal for pass in current test case
+        current.d = current.q + 1;
+        if (current.q == length - 1){testState.d = testState.COMPLETE;}
+        else{testState.d = testState.CALC;}
+      
+      testState.COMPLETE:
+        led_out = b11; // signal for completion in all test cases
+        testState.d = testState.COMPLETE;
+        
+      default:
+        led_out = b00;
+        testState.d = testState.CALC;
+    }
+
+  }
+}
