@@ -7,7 +7,6 @@
 * @output b          - 16 bit value of b for the requested test case
 * @output alufn      -  6 bit alufn control signal for the requested test case
 * @output exp_out    - 16 bit expected output for the requested test case
-* @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
 * @output num_cases  - the total number of test cases provided by this ROM
 */
 module rom_shifter (
@@ -17,9 +16,6 @@ module rom_shifter (
     output b[16],
     output alufn[6],
     output exp_out[16],
-    output exp_z,
-    output exp_v,
-    output exp_n,
     output num_cases[5]
   ) {
 
@@ -31,7 +27,6 @@ module rom_shifter (
   const TEST_B = {16d2, 16d3, 16d4, 16d2, 16d3, 16d4};
   const ALUFN = {SHL, SHR, SRA, SHL, SHR, SRA};
   const EXP_OUT = {16h28, 16h6C, 16h23, 16hFFD8, 16h1FAB, 16hFFE3};
-  const EXP_ZVN = {3b000, 3b000, 3b000, 3b001, 3b000, 3b001};
 
   always {
     num_cases = 5d6;
@@ -39,8 +34,5 @@ module rom_shifter (
     b = TEST_B[test_case];
     alufn = ALUFN[test_case];
     exp_out = EXP_OUT[test_case];
-    exp_z = EXP_ZVN[test_case][2];
-    exp_V = EXP_ZVN[test_case][1];
-    exp_n = EXP_ZVN[test_case][0];
   }
 }

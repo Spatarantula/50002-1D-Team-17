@@ -6,7 +6,9 @@
 * @input alufn -  6 bit control signal
 *   00 0000: a+b,
 *   00 0001: a-b,
-*   00 0010: a*b,
+*   00 0100: a*b,
+*   00 0101: a/b,
+*   00 0110: a%b,
 *   01 1000: a AND b,
 *   01 1110: a  OR b,
 *   01 0110: a XOR b,
@@ -22,6 +24,7 @@
 * @output z    -  1 bit, set to true if the result is 0
 * @output v    -  1 bit, set to true if there is an overflow
 * @output n    -  1 bit, set to true if the result is negative
+* @output e    -  1 bit, set to true if an arithmetic error occured (currently, the only error that can happen is div by 0 in multiplier)
 */
 module alu (
     input a[16],
@@ -30,36 +33,42 @@ module alu (
     output out[16],
     output z,
     output v,
-    output n
+    output n,
+    output e
   ) {
   
   // instantiate all the components
-  .a(a) {
-    .b(b) {
-      .alufn(alufn) {
-        adder adderALU; 
-        boolean booleanALU;
-        shifter shifterALU;
-      }
+  .alufn(alufn) {
+    .b(b), .a(a) {
+      adder adderALU; 
+      boolean booleanALU;
+      shifter shifterALU;
       multiplier multiplierALU;
     }
+    compare compareALU;
   }
-  compare compareALU(.alufn(alufn));
+  
    
   // temp variable to choose add/multiply
   sig mul_or_add[16];
   
   always {
-    z = adderALU.z;
-    v = adderALU.v;
-    n = adderALU.n;
-    
+    e = 0;
+    z = 0;
+    v = 0;
+    n = 0;
+    if(alufn[5:4] == 2b11 || alufn[5:2] == 4b0) {
+      z = adderALU.z;
+      v = adderALU.v;
+      n = adderALU.n;
+    }
+
     compareALU.z = adderALU.z;
     compareALU.v = adderALU.v;
     compareALU.n = adderALU.n;
     
     // choose whether to add or multiply
-    case(alufn[1]) {
+    case(alufn[2]) {
       1b0:
         mul_or_add = adderALU.out;
       1b1:

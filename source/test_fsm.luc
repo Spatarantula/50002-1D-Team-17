@@ -10,26 +10,24 @@
 module test_fsm (
     input clk,
     input rst,
-    output unit_passed[5],
+    output unit_passed[7],
     output test_cases_passed[16]
 ) {
   .clk(clk) {
     .rst(rst) {
-      fsm test_unit = {ADDER, BOOLEAN, COMPARE, MULTIPLIER, SHIFTER, DONE};
+      fsm test_unit = {ADDER1, ADDER2, BOOLEAN, COMPARE, MULTIPLIER1, MULTIPLIER2, SHIFTER, DONE};
       dff counter[31](#INIT(0)); // the high 5 bits of this are used as a counter for test cases
     }
   }
   
-  .test_case(counter.q[30:26]) {
-    // rom_adder      rom1;
-    // rom_boolean    rom2;
-    // rom_compare    rom3;
-    
-    rom_shifter    rom1; // need to replace these temp shifter roms w/ your own rom!
-    rom_shifter    rom2;
-    rom_shifter    rom3;
-    rom_multiplier rom4;
-    rom_shifter    rom5;
+  .test_case(counter.q[30:26]) {    
+    rom_adder1      rom1; // need to replace these temp shifter roms w/ your own rom!\
+    rom_adder2      rom2;
+    rom_adder1      rom3; // rom_boolean    rom3;
+    rom_adder2      rom4; // rom_compare    rom4;
+    rom_multiplier1 rom5;
+    rom_multiplier2 rom6;
+    rom_shifter     rom7;
   }
 
   sig a[16];
@@ -39,20 +37,31 @@ module test_fsm (
   sig exp_z;
   sig exp_v;
   sig exp_n;
+  sig exp_e;
   sig test_cases_passed_s[16];
-  sig unit_passed_s[5];
+  sig unit_passed_s[7];
     
   alu test_alu(.a(a), .b(b), .alufn(alufn));
 
   always {
     counter.d = counter.q+1;
 
+    alufn = 0;
+    exp_out = 0;
+    exp_z = 0;
+    exp_v = 0;
+    exp_n = 0;
+    exp_e = 0;
+
     if(counter.q[30:26] == 0) {
       test_cases_passed_s = 16b0;
     }
+
     test_cases_passed_s = test_cases_passed_s;
+    unit_passed_s = unit_passed_s;
+
     case(test_unit.q) {
-      test_unit.ADDER:
+      test_unit.ADDER1:
         a = rom1.a;
         b = rom1.b;
         alufn = rom1.alufn;
@@ -62,11 +71,11 @@ module test_fsm (
         exp_n = rom1.exp_n;
         unit_passed_s[0] = 0;
         if(counter.q[30:26] == rom1.num_cases-1) {
-          unit_passed_s[0] = &test_cases_passed_s[0:rom5.num_cases-1];
+          unit_passed_s[0] = &test_cases_passed_s[0:rom1.num_cases-1];
           counter.d = 0;
-          test_unit.d = test_unit.BOOLEAN;
+          test_unit.d = test_unit.ADDER2;
         }
-      test_unit.BOOLEAN:
+      test_unit.ADDER2:
         a = rom2.a;
         b = rom2.b;
         alufn = rom2.alufn;
@@ -80,24 +89,21 @@ module test_fsm (
           counter.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
-      test_unit.COMPARE:
+      test_unit.BOOLEAN:
         a = rom3.a;
         b = rom3.b;
         alufn = rom3.alufn;
         exp_out = rom3.exp_out;
-        exp_z = rom3.exp_z;
-        exp_v = rom3.exp_v;
-        exp_n = rom3.exp_n;
         unit_passed_s[2] = 0;
         if(counter.q[30:26] == rom3.num_cases-1) {
           unit_passed_s[2] = &test_cases_passed_s[0:rom3.num_cases-1];
           counter.d = 0;
-          test_unit.d = test_unit.BOOLEAN;
+          test_unit.d = test_unit.COMPARE;
         }
-      test_unit.MULTIPLIER:
+      test_unit.COMPARE:
         a = rom4.a;
         b = rom4.b;
-        alufn = 6b000010;
+        alufn = rom4.alufn;
         exp_out = rom4.exp_out;
         exp_z = rom4.exp_z;
         exp_v = rom4.exp_v;
@@ -106,37 +112,46 @@ module test_fsm (
         if(counter.q[30:26] == rom4.num_cases-1) {
           unit_passed_s[3] = &test_cases_passed_s[0:rom4.num_cases-1];
           counter.d = 0;
-          test_unit.d = test_unit.BOOLEAN;
+          test_unit.d = test_unit.MULTIPLIER1;
         }
-      test_unit.SHIFTER:
+      test_unit.MULTIPLIER1:
         a = rom5.a;
         b = rom5.b;
         alufn = rom5.alufn;
         exp_out = rom5.exp_out;
-        exp_z = rom5.exp_z;
-        exp_v = rom5.exp_v;
-        exp_n = rom5.exp_n;
         unit_passed_s[4] = 0;
         if(counter.q[30:26] == rom5.num_cases-1) {
           unit_passed_s[4] = &test_cases_passed_s[0:rom5.num_cases-1];
           counter.d = 0;
+          test_unit.d = test_unit.MULTIPLIER2;
+        }
+      test_unit.MULTIPLIER2:
+        a = rom6.a;
+        b = rom6.b;
+        alufn = rom6.alufn;
+        exp_out = rom6.exp_out;
+        unit_passed_s[5] = 0;
+        if(counter.q[30:26] == rom6.num_cases-1) {
+          unit_passed_s[5] = &test_cases_passed_s[0:rom6.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.SHIFTER;
+        }
+      test_unit.SHIFTER:
+        a = rom7.a;
+        b = rom7.b;
+        alufn = rom7.alufn;
+        exp_out = rom7.exp_out;
+        unit_passed_s[6] = 0;
+        if(counter.q[30:26] == rom7.num_cases-1) {
+          unit_passed_s[5] = &test_cases_passed_s[0:rom7.num_cases-1];
+          counter.d = 0;
           test_unit.d = test_unit.DONE;
         }
       test_unit.DONE:
-        unit_passed_s = unit_passed_s;
-        exp_out = 0;
-        exp_z = 0;
-        exp_v = 0;
-        exp_n = 0;
         counter.d = 0;
-      default: // unreachable
-        unit_passed_s = unit_passed_s;
-        exp_out = 0;
-        exp_z = 0;
-        exp_v = 0;
-        exp_n = 0;
     }
-    test_cases_passed_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n} ^ {exp_z, exp_v, exp_n});
+
+    test_cases_passed_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
 
     test_cases_passed = test_cases_passed_s;
     unit_passed = unit_passed_s;

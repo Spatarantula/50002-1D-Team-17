@@ -5,16 +5,20 @@
     <component>counter.luc</component>
     <component>decoder.luc</component>
     <src>multiplier.luc</src>
-    <src>adder.luc</src>
-    <src>rom_comparator1.luc</src>
+    <src>rom_comparator.luc</src>
     <src>shifter.luc</src>
-    <src>rom_shifter.luc</src>
-    <src>rom_multiplier.luc</src>
-    <component>reset_conditioner.luc</component>
-    <src>compare.luc</src>
+    <src>rom_adder1.luc</src>
+    <src>rom_multiplier1.luc</src>
     <src>boolean.luc</src>
     <src top="true">au_top.luc</src>
     <src>test_fsm.luc</src>
+    <src>rom_adder2.luc</src>
+    <component>reset_conditioner.luc</component>
+    <src>adder.luc</src>
+    <src>compare.luc</src>
+    <src>rom_multiplier2.luc</src>
+    <src>rom_shifter.luc</src>
+>>>>>>> main
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>
