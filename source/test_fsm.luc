@@ -3,15 +3,20 @@
 *
 * @input clk                       - the default clock input
 * @input rst                       - the default reset input
+* @input error                     - if we want to simulate an error
 *
 * @output unit_passed              - if a unit passes all its test cases, the bit corresponding to it is set to 1
 * @output test_casses_passed       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
+* @output complete                 - flag to indicate when the testing is complete
 */
 module test_fsm (
     input clk,
     input rst,
+    input error,
+
     output unit_passed[7],
-    output test_cases_passed[16]
+    output test_cases_passed[16],
+    output complete
 ) {
   .clk(clk) {
     .rst(rst) {
@@ -30,22 +35,30 @@ module test_fsm (
     rom_shifter     rom7;
   }
 
+  // standard alu inputs
   sig a[16];
   sig b[16];
   sig alufn[6];
+
+  // expected output, z, v, b
   sig exp_out[16];
   sig exp_z;
   sig exp_v;
   sig exp_n;
+
+  // expected error flag from the multiplier in case of a division by 0
+  // 0 if the operation is not multiplication
   sig exp_e;
-  sig test_cases_passed_s[16];
+
   sig unit_passed_s[7];
+  sig test_cases_passed_s[16];
     
   alu test_alu(.a(a), .b(b), .alufn(alufn));
 
   always {
     counter.d = counter.q+1;
 
+    complete = 0;
     alufn = 0;
     exp_out = 0;
     exp_z = 0;
@@ -53,6 +66,9 @@ module test_fsm (
     exp_n = 0;
     exp_e = 0;
 
+    // since the counter is increased every clock cycle,
+    // and bitss 30-26 are used to count, it gives us a counter
+    // which approximately increases once every 1.34 s
     if(counter.q[30:26] == 0) {
       test_cases_passed_s = 16b0;
     }
@@ -60,6 +76,8 @@ module test_fsm (
     test_cases_passed_s = test_cases_passed_s;
     unit_passed_s = unit_passed_s;
 
+    // In each cycle, the test cases indicated by the counter's top 5 bits
+    // is loaded into the signals using this switch-case statement here
     case(test_unit.q) {
       test_unit.ADDER1:
         a = rom1.a;
@@ -70,6 +88,10 @@ module test_fsm (
         exp_v = rom1.exp_v;
         exp_n = rom1.exp_n;
         unit_passed_s[0] = 0;
+
+        // if all the test cases of a ROM have been checked
+        // determine if all of them were a pass and set the corresponding
+        // unit_passed flag accordingly. Advance the FSM to the next state
         if(counter.q[30:26] == rom1.num_cases-1) {
           unit_passed_s[0] = &test_cases_passed_s[0:rom1.num_cases-1];
           counter.d = 0;
@@ -160,7 +182,9 @@ module test_fsm (
           test_unit.d = test_unit.DONE;
         }
       test_unit.DONE:
+        // fix the counter to 0 and mark the testing as completed
         counter.d = 0;
+        complete = 1;
     }
 
     test_cases_passed_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
