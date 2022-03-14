@@ -63,6 +63,9 @@ module test_fsm (
   alu test_alu(.a(a), .b(b), .alufn(alufn));
 
   always {
+    unit_passed = 0;
+    test_cases_passed = 0;
+    complete = 0;
     if(start == 1) {
       // since the counter is increased every clock cycle,
       // and bits 30-26 are used to count, it gives us a counter
