@@ -7,6 +7,8 @@
 *   00 0000: a+b,
 *   00 0001: a-b,
 *   00 0010: a*b,
+*   00 0011: a/b,
+*   00 0100: a%b,
 *   01 1000: a AND b,
 *   01 1110: a  OR b,
 *   01 0110: a XOR b,
@@ -34,17 +36,16 @@ module alu (
   ) {
   
   // instantiate all the components
-  .a(a) {
-    .b(b) {
-      .alufn(alufn) {
-        adder adderALU; 
-        boolean booleanALU;
-        shifter shifterALU;
-      }
+  .alufn(alufn) {
+    .b(b), .a(a) {
+      adder adderALU; 
+      boolean booleanALU;
+      shifter shifterALU;
       multiplier multiplierALU;
     }
+    compare compareALU;
   }
-  compare compareALU(.alufn(alufn));
+  
    
   // temp variable to choose add/multiply
   sig mul_or_add[16];

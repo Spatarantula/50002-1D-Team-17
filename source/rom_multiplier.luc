@@ -14,6 +14,7 @@ module rom_multiplier (
 
     output a[16],
     output b[16],
+    output alufn[6],
     output exp_out[16],
     output exp_z,
     output exp_v,
@@ -23,6 +24,7 @@ module rom_multiplier (
 
   const TEST_A = {16d10, 16d500, -16d2, 16d2, -16d10, -16d500};
   const TEST_B = {16d2, 16d500, 16d4, -16d4, -16d2, 16d500};
+  const ALUFN = {6b010, 6b010, 6b010, 6b010, 6b010, 6b010};
   const EXP_OUT = {16d20, -16d12144, -16d8, -16d8, 16d20, 16d12144};
   const EXP_ZVN = {3b000, 3b000, 3b000, 3b001, 3b001, 3b100};
 
@@ -30,6 +32,7 @@ module rom_multiplier (
     num_cases = 5d6;
     a = TEST_A[test_case];
     b = TEST_B[test_case];
+    alufn = ALUFN[test_case];
     exp_out = EXP_OUT[test_case];
     exp_z = EXP_ZVN[test_case][2];
     exp_v = EXP_ZVN[test_case][1];
