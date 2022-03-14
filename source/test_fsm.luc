@@ -11,7 +11,7 @@ module test_fsm (
     input clk,
     input rst,
     output unit_passed[5],
-    output test_cases_passed[32]
+    output test_cases_passed[16]
 ) {
   .clk(clk) {
     .rst(rst) {
