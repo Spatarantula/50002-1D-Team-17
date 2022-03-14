@@ -16,7 +16,7 @@ module au_top (
   .clk(clk) {
     .rst(rst) {
       fsm state = {START, MANUAL, AUTO};
-      test_fsm tester(.error(0));
+      test_fsm tester(.error(io_button[0]));
       manual_test manual(.io_shield_button(io_button), .io_shield_dip(io_dip)); //instance of the manual tester
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
