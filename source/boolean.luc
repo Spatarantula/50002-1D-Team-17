@@ -1,32 +1,48 @@
-// boolean module used in ALU module
+/**
+* Performs bitwise operations on two 16 bit values.
+*
+* @input a     - 16 bit input from reg A
+* @input b     - 16 bit input from reg B
+* @input alufn -  6 bit control signal
+*   xx 1000: a AND b,
+*   xx 1110: a  OR b,
+*   xx 0110: a XOR b,
+*   xx 1010: output a,
+*   xx 0111: a NAND b,
+*   xx 0001: a NOR b,
+*   xx 1001: a XNOR b,
+*   xx 1100: return b,
+*
+* @output out  - 16 bit result of the bitwise operation performed
+*/
 module boolean (
-    input a[16],    // 16 bit input A
-    input b[16],    // 16 bit input B
-    input alufn[6], // 6 bit input ALUFN
-    output out[16]  // 16 bit output BOOLEAN
+    input a[16],
+    input b[16],
+    input alufn[6],
+    output out[16]
   ) {
 
-  
   always {
-
-    case(alufn[3:0]){ //using just the first 4 bits of the alufn signal
-    
-      
-      
-      default: out = 0; //if alufn is none of the given, return 0
-
-      b1000: out = a & b;        //if alufn = 1000: a AND b
-      b1110: out = a | b;        //if alufn = 1110: a OR b
-      b0110: out = a ^ b;        //if alufn = 0110: a XOR b
-      b1010: out = a;            //if alufn = 1010: return a
-      b0111: out = ~(a & b);     //if alufn = 0111: a NAND b
-      b0001: out = ~ (a | b);    //if alufn = 0001: a NOR b
-      b1001: out = ~ ( a ^ b);   //if alufn = 1001: a XNOR b
-      b1100: out = b;            //if alufn = 1100: return b 
-      
-      default: out = 16b0;      //if alufn is none of the given, return 0
+    case(alufn[3:0]) {
+      b1000:
+        out = a & b;
+      b1110:
+        out = a | b;
+      b0110:
+        out = a ^ b;
+      b1010:
+        out = a;
+      b0111:
+        out = ~(a & b);
+      b0001:
+        out = ~(a | b);
+      b1001:
+        out = ~(a ^ b);
+      b1100:
+        out = b;
+      default:
+        out = 16b0;
     }
-   
   }
 }
 

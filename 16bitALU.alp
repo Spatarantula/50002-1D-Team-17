@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="16bitALU" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>alu.luc</src>
-    <src>adder.luc</src>
-    <src>shifter.luc</src>
-    <component>reset_conditioner.luc</component>
-    <src>compare.luc</src>
-    <src>booleanTest.luc</src>
-    <src top="true">au_top.luc</src>
-    <src>boolean.luc</src>
     <src>multiplier.luc</src>
+    <src>shifter.luc</src>
+    <src>rom_adder1.luc</src>
+    <component>counter.luc</component>
+    <src>rom_multiplier1.luc</src>
+    <component>decoder.luc</component>
+    <src>rom_comparator.luc</src>
+    <src>boolean.luc</src>
+    <src top="true">au_top.luc</src>
+    <src>alu.luc</src>
+    <src>test_fsm.luc</src>
+    <src>rom_adder2.luc</src>
+    <component>reset_conditioner.luc</component>
+    <src>rom_boolean.luc</src>
+    <src>adder.luc</src>
+    <src>compare.luc</src>
+    <src>rom_multiplier2.luc</src>
+    <src>rom_shifter.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>

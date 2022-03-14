@@ -1,0 +1,54 @@
+/**
+* ROM containing part2 of the test cases for the adder
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output alufn      -  6 bit alufn control signal for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_z      -  1 bit expected output for Z flags for the requested test 
+* @output exp_v      -  1 bit expected output for V flags for the requested test 
+* @output exp_n      -  1 bit expected output for N flags for the requested test 
+* @output num_cases  - the total number of test cases provided by this ROM
+*/
+module rom_adder2 (
+    input test_case[5],
+    output num_cases[5],
+    
+    output a[16], 
+    output b[16],
+    output alufn[6],
+    output exp_out[16],
+    output exp_z,
+    output exp_v,
+    output exp_n
+  ) {
+
+  // 8 test cases for overflow                                                        
+  const A = {16h8000, 16h8000, 16h7FFF, 16h7FFF, 16h8000, 16h8000, 16h7FFF, 16h7FFF};
+  
+  const B = {16hFFFF, 16h8000, 16h7FFF, 16h0001, 16h0001, 16h7FFF, 16hFFFF, 16h8000};
+  
+  // all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
+  const ALUFN_SIGNAL = {6h0, 6h0, 6h0, 6h0, 6h1, 6h1, 6h1, 6h1};
+  
+  const EXPECTED_OUTPUT_SUM = {16h7FFF, 16h0000, 16hFFFE, 16h8000, 16h7FFF, 16h0001, 16h8000, 16hFFFF};
+  
+  const EXPECTED_OUTPUT_Z = {1b0, 1b1, 1b0, 1b0, 1b0, 1b0, 1b0, 1b0};
+  
+  const EXPECTED_OUTPUT_V = {1b1, 1b1, 1b1, 1b1, 1b1, 1b1, 1b1, 1b1};
+  
+  const EXPECTED_OUTPUT_N = {1b0, 1b0, 1b1, 1b1, 1b0, 1b0, 1b1, 1b1};
+  
+  always {
+    num_cases = 5d8;
+    a = A[test_case];
+    b = B[test_case];
+    alufn = ALUFN_SIGNAL[test_case];
+    exp_out = EXPECTED_OUTPUT_SUM[test_case];
+    exp_z = EXPECTED_OUTPUT_Z[test_case];
+    exp_v = EXPECTED_OUTPUT_V[test_case];
+    exp_n = EXPECTED_OUTPUT_N[test_case];
+  }
+}
