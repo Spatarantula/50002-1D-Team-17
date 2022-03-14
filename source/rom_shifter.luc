@@ -33,7 +33,7 @@ module rom_shifter (
   const TEST_B = {16d2, 16d3, 16d4, 16d2, 16d3, 16d4};
   const ALUFN = {SHL, SHR, SRA, SHL, SHR, SRA};
   const EXP_ZVN = {3b000, 3b000, 3b000, 3b001, 3b001, 3b001};
-  const EXP_OUT = {16h28, 16h6C, 16h23, 16hFFD8, 16h1FAB, 16hFFE3};
+  const EXP_OUT = {16h0028, 16h0046, 16h0036, 16hFFD8, 16hFFC7, 16hFFD5};
 
   always {
     num_cases = 5d6;
