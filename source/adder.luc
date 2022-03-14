@@ -28,7 +28,7 @@ module adder (
   always {
     xb = 16x{alufn[0]} ^ b;
 
-    sum = a+b;
+    sum = a+xb;
     
     n = sum[15];                                                       // N = S_15
     v = (a[15] & xb[15] & !sum[15]) | (!a[15] & !xb[15] & sum[15]);    // V = A.xB.S_15' + A'.xB'.S_15

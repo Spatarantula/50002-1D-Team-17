@@ -45,7 +45,7 @@ module manual_test (
         }
  
       state.LISTEN_B:
-        // aInput.d = aInput.q;                             // allow aInput to store data of input a
+        aInput.d = aInput.q;                             // allow aInput to store data of input a
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[2]) {                        // if the io_shield_button[2] is pressed, move on to the next state, avoid using the same button as previous state to prevent the fsm from "zooming" past state LISTEN_B
           bInput.d = dip_in.q;
@@ -53,7 +53,7 @@ module manual_test (
         }
           
       state.LISTEN_ALUFN:
-        // bInput.d = bInput.q;               // allow bInput to store data of input b
+        bInput.d = bInput.q;               // allow bInput to store data of input b
         dip_in.d = io_shield_dip[0][5:0];  // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[0]) {          // if the io_shield_button[0] is pressed, move on to the next state
           alufnInput.d = dip_in.q[5:0];
@@ -61,7 +61,7 @@ module manual_test (
           }
         
       state.CALC:
-        // alufnInput.d = alufnInput.q; // allow alufnInput to store data of input alufn
+        alufnInput.d = alufnInput.q; // allow alufnInput to store data of input alufn
         
         //connect the nodes of the alu instance to the DFFs containing the data
         aluTestInstance.a = aInput.q;
