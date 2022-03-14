@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="16bitALU" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>rom_compare.luc</src>
+    <src>rom_comparator.luc</src>
     <src>alu.luc</src>
     <component>pipeline.luc</component>
     <src>seven_seg.luc</src>
