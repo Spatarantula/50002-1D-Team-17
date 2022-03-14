@@ -50,6 +50,8 @@ module test_fsm (
 
   sig unit_passed_s[7];
   sig test_cases_passed_s[16];
+  sig max_test_cases[5];
+  sig unit[3];
 
   // expected error flag from the multiplier in case of a division by 0
   // 0 if the operation is not multiplication
@@ -74,16 +76,6 @@ module test_fsm (
     exp_n = 0;
     exp_e = 0; //division by 0
 
-    alu_out = test_alu.out;
-    
-    if(error == 1)
-      alu_out = ~alu_out;
-      
-    test_cases_passed_s[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
-
-    test_cases_passed = test_cases_passed_s;
-    unit_passed = unit_passed_s.q;
-
     // In each cycle, the test cases indicated by the counter's top 5 bits
     // is loaded into the signals using this switch-case statement here
     case(test_unit.q) {
@@ -95,17 +87,8 @@ module test_fsm (
         exp_z = rom1.exp_z;
         exp_v = rom1.exp_v;
         exp_n = rom1.exp_n;
-        unit_passed_s[0] = 0;
-
-        // if all the test cases of a ROM have been checked
-        // determine if all of them were a pass and set the corresponding
-        // unit_passed flag accordingly. Advance the FSM to the next state
-        if(counter.q[30:26] == rom1.num_cases-1) {
-          unit_passed_s[0] = &test_cases_passed_s[4d13:0]; // hardcoded values of num_cases(14) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.ADDER2;
-        }
+        max_test_cases = rom1.num_cases-1;
+        unit = 0;
       test_unit.ADDER2:
         a = rom2.a;
         b = rom2.b;
@@ -114,13 +97,8 @@ module test_fsm (
         exp_z = rom2.exp_z;
         exp_v = rom2.exp_v;
         exp_n = rom2.exp_n;
-        unit_passed_s[1] = 0;
-        if(counter.q[30:26] == rom2.num_cases-1) {
-          unit_passed_s[1] = &test_cases_passed_s[4d7:0]; // hardcoded values of num_cases(8) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.BOOLEAN;
-        }
+        max_test_cases = rom2.num_cases-1;
+        unit = 1;
       test_unit.BOOLEAN:
         a = rom3.a;
         b = rom3.b;
@@ -129,13 +107,8 @@ module test_fsm (
         exp_z = rom3.exp_z;
         exp_v = rom3.exp_v;
         exp_n = rom3.exp_n;
-        unit_passed_s[2] = 0;
-        if(counter.q[30:26] == rom3.num_cases-1) {
-          unit_passed_s[2] = &test_cases_passed_s[4d7:0]; // hardcoded values of num_cases(8) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.COMPARE;
-        }
+        max_test_cases = rom3.num_cases-1;
+        unit = 2;
       test_unit.COMPARE:
         a = rom4.a;
         b = rom4.b;
@@ -144,13 +117,8 @@ module test_fsm (
         exp_z = rom4.exp_z;
         exp_v = rom4.exp_v;
         exp_n = rom4.exp_n;
-        unit_passed_s[3] = 0;
-        if(counter.q[30:26] == rom4.num_cases-1) {
-          unit_passed_s[3] = &test_cases_passed_s[4d15:0]; // hardcoded values of num_cases(16) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.MULTIPLIER1;
-        }
+        max_test_cases = rom4.num_cases-1;
+        unit = 3;
       test_unit.MULTIPLIER1:
         a = rom5.a;
         b = rom5.b;
@@ -159,13 +127,8 @@ module test_fsm (
         exp_z = rom5.exp_z;
         exp_v = rom5.exp_v;
         exp_n = rom5.exp_n;
-        unit_passed_s[4] = 0;
-        if(counter.q[30:26] == rom5.num_cases-1) {
-          unit_passed_s[4] = &test_cases_passed_s[4d12:0]; // hardcoded values of num_cases(13) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.MULTIPLIER2;
-        }
+        max_test_cases = rom5.num_cases-1;
+        unit = 4;
       test_unit.MULTIPLIER2:
         a = rom6.a;
         b = rom6.b;
@@ -174,13 +137,8 @@ module test_fsm (
         exp_z = rom6.exp_z;
         exp_v = rom6.exp_v;
         exp_n = rom6.exp_n;
-        unit_passed_s[5] = 0;
-        if(counter.q[30:26] == rom6.num_cases-1) {
-          unit_passed_s[5] = &test_cases_passed_s[4d5:0]; // hardcoded values of num_cases(6) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.SHIFTER;
-        }
+        max_test_cases = rom6.num_cases-1;
+        unit = 5;
       test_unit.SHIFTER:
         a = rom7.a;
         b = rom7.b;
@@ -189,17 +147,60 @@ module test_fsm (
         exp_z = rom7.exp_z;
         exp_v = rom7.exp_v;
         exp_n = rom7.exp_n;
-        unit_passed_s[6] = 0;
-        if(counter.q[30:26] == rom7.num_cases-1) {
-          unit_passed_s[6] = &test_cases_passed_s[4d5:0]; // hardcoded values of num_cases(6) - 1
-          counter.d = 0;
-          test_cases_passed_s = 0;
-          test_unit.d = test_unit.DONE;
-        }
+        max_test_cases = rom7.num_cases-1;
+        unit = 6;
       test_unit.DONE:
         // fix the counter to 0 and mark the testing as completed
+        unit = -1;
+        max_test_cases = 0;
         counter.d = 0;
         complete = 1;
+      default: // unreachable
+        max_test_cases = 0;
+        unit = -1;
     }
+
+    alu_out = test_alu.out;
+    
+    if(error == 1)
+      alu_out = ~alu_out;
+      
+    test_cases_passed_s[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
+
+    test_cases_passed = test_cases_passed_s;
+
+    // if all the test cases of a ROM have been checked
+    // determine if all of them were a pass and set the corresponding
+    // unit_passed flag accordingly. Advance the FSM to the next state
+    if(counter.q[30:26] == max_test_cases) {
+      counter.d = 0;
+      case(unit) {
+        0:
+          test_unit.d = test_unit.ADDER2;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        1:
+          test_unit.d = test_unit.BOOLEAN;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        2:
+          test_unit.d = test_unit.COMPARE;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        3:
+          test_unit.d = test_unit.MULTIPLIER1;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        4:
+          test_unit.d = test_unit.MULTIPLIER2;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        5:
+          test_unit.d = test_unit.SHIFTER;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        6:
+          test_unit.d = test_unit.DONE;
+          unit_passed_s[unit] = &test_cases_passed_s[max_test_cases:0];
+        default:
+          unit_passed_s = 0;
+      }
+      test_cases_passed_s = 0;
+    }
+    unit_passed = unit_passed_s;
   }
 }
