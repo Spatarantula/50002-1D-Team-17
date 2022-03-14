@@ -7,6 +7,7 @@
     <component>counter.luc</component>
     <src>rom_multiplier1.luc</src>
     <component>decoder.luc</component>
+    <src>rom_comparator.luc</src>
     <src>boolean.luc</src>
     <src top="true">au_top.luc</src>
     <src>alu.luc</src>
