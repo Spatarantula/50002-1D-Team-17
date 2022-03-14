@@ -58,14 +58,9 @@ module alu (
   
   always {
     e = 0;
-    z = 0;
-    v = 0;
-    n = 0;
-    if(alufn[5:4] == 2b11 || alufn[5:2] == 4b0) {
-      z = adderALU.z;
-      v = adderALU.v;
-      n = adderALU.n;
-    }
+    z = adderALU.z;
+    v = adderALU.v;
+    n = adderALU.n;
 
     compareALU.z = adderALU.z;
     compareALU.v = adderALU.v;

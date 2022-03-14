@@ -94,6 +94,9 @@ module test_fsm (
         b = rom3.b;
         alufn = rom3.alufn;
         exp_out = rom3.exp_out;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
         unit_passed_s[2] = 0;
         if(counter.q[30:26] == rom3.num_cases-1) {
           unit_passed_s[2] = &test_cases_passed_s[0:rom3.num_cases-1];
@@ -119,6 +122,9 @@ module test_fsm (
         b = rom5.b;
         alufn = rom5.alufn;
         exp_out = rom5.exp_out;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
         unit_passed_s[4] = 0;
         if(counter.q[30:26] == rom5.num_cases-1) {
           unit_passed_s[4] = &test_cases_passed_s[0:rom5.num_cases-1];
@@ -130,6 +136,9 @@ module test_fsm (
         b = rom6.b;
         alufn = rom6.alufn;
         exp_out = rom6.exp_out;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
         unit_passed_s[5] = 0;
         if(counter.q[30:26] == rom6.num_cases-1) {
           unit_passed_s[5] = &test_cases_passed_s[0:rom6.num_cases-1];
@@ -141,6 +150,9 @@ module test_fsm (
         b = rom7.b;
         alufn = rom7.alufn;
         exp_out = rom7.exp_out;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
         unit_passed_s[6] = 0;
         if(counter.q[30:26] == rom7.num_cases-1) {
           unit_passed_s[5] = &test_cases_passed_s[0:rom7.num_cases-1];

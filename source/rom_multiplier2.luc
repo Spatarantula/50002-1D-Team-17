@@ -7,6 +7,9 @@
 * @output b          - 16 bit value of b for the requested test case
 * @output exp_out    - 16 bit expected output for the requested test case
 * @output exp_e      -  1 bit expected output for E flag for the requested test case
+* @output exp_z      -  1 bit expected output for Z flags for the requested test 
+* @output exp_v      -  1 bit expected output for V flags for the requested test 
+* @output exp_n      -  1 bit expected output for N flags for the requested test 
 * @output num_cases  - the total number of test cases provided by this ROM
 */
 module rom_multiplier2 (
@@ -16,6 +19,9 @@ module rom_multiplier2 (
     output b[16],
     output alufn[6],
     output exp_out[16],
+    output exp_z,
+    output exp_v,
+    output exp_n,
     output exp_e,
     output num_cases[5]
   ) {
@@ -25,6 +31,7 @@ module rom_multiplier2 (
   const TEST_B =  {    16d5,     16d0,     16d2,     16d2,    16d10,    16d10};
   const ALUFN  =  {6b000110, 6b000110, 6b000110, 6b000110, 6b000110, 6b000110};
   const EXP_OUT = {    16d0,     16d0,     16d1,    -16d0,    -16d3,    -16d5};
+  const EXP_ZVN = {   3b001,    3b000,    3b000,    3b001,    3b001,    3b001};
   const EXP_E =   {       0,        1,        0,        0,        0,        0};
 
   always {
@@ -34,5 +41,8 @@ module rom_multiplier2 (
     alufn = ALUFN[test_case];
     exp_out = EXP_OUT[test_case];
     exp_e = EXP_E[test_case];
+    exp_z = EXP_ZVN[test_case][2];
+    exp_v = EXP_ZVN[test_case][1];
+    exp_n = EXP_ZVN[test_case][0];
   }
 }

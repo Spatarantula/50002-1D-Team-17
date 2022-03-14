@@ -6,7 +6,9 @@
 * @output a          - 16 bit value of a for the requested test case
 * @output b          - 16 bit value of b for the requested test case
 * @output exp_out    - 16 bit expected output for the requested test case
-* @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
+* @output exp_z      -  1 bit expected output for Z flags for the requested test 
+* @output exp_v      -  1 bit expected output for V flags for the requested test 
+* @output exp_n      -  1 bit expected output for N flags for the requested test 
 * @output num_cases  -  5 bit value of total number of test cases provided by this ROM
 */
 
