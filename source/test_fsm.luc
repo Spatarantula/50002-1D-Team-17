@@ -1,0 +1,144 @@
+/**
+* Tests the shifter with hard coded test cases and outputs
+*
+* @input clk          - the default clock input
+* @input rst          - the default reset input
+*
+* @output unit_passed - if a unit passes all its test cases, the bit corresponding to it is set to 1
+* @output cases       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
+*/
+module test_fsm (
+    input clk,
+    input rst,
+    output unit_passed[5],
+    output cases[32]
+) {
+  .clk(clk) {
+    .rst(rst) {
+      fsm test_unit = {ADDER, BOOLEAN, COMPARE, MULTIPLIER, SHIFTER, DONE};
+      dff counter[31](#INIT(0)); // the high 5 bits of this are used as a counter for test cases
+    }
+  }
+  
+  .test_case(counter.q[30:26]) {
+    // rom_adder      rom1;
+    // rom_boolean    rom2;
+    // rom_compare    rom3;
+    
+    rom_shifter    rom1; // need to replace these temp shifter roms w/ your own rom!
+    rom_shifter    rom2;
+    rom_shifter    rom3;
+    rom_multiplier rom4;
+    rom_shifter    rom5;
+  }
+
+  sig a[16];
+  sig b[16];
+  sig alufn[6];
+  sig exp_out[16];
+  sig exp_z;
+  sig exp_v;
+  sig exp_n;
+  sig cases_s[16];
+  sig unit_passed_s[5];
+    
+  alu test_alu(.a(a), .b(b), .alufn(alufn));
+
+  always {
+    counter.d = counter.q+1;
+
+    if(counter.q[30:26] == 0) {
+      cases_s = 16b0;
+    }
+    cases_s = cases_s;
+    case(test_unit.q) {
+      test_unit.ADDER:
+        a = rom1.a;
+        b = rom1.b;
+        alufn = rom1.alufn;
+        exp_out = rom1.exp_out;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
+        unit_passed_s[0] = 0;
+        if(counter.q[30:26] == rom1.num_cases-1) {
+          unit_passed_s[0] = &cases_s[0:rom5.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.BOOLEAN;
+        }
+      test_unit.BOOLEAN:
+        a = rom2.a;
+        b = rom2.b;
+        alufn = rom2.alufn;
+        exp_out = rom2.exp_out;
+        exp_z = rom2.exp_z;
+        exp_v = rom2.exp_v;
+        exp_n = rom2.exp_n;
+        unit_passed_s[1] = 0;
+        if(counter.q[30:26] == rom2.num_cases-1) {
+          unit_passed_s[1] = &cases_s[0:rom2.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.BOOLEAN;
+        }
+      test_unit.COMPARE:
+        a = rom3.a;
+        b = rom3.b;
+        alufn = rom3.alufn;
+        exp_out = rom3.exp_out;
+        exp_z = rom3.exp_z;
+        exp_v = rom3.exp_v;
+        exp_n = rom3.exp_n;
+        unit_passed_s[2] = 0;
+        if(counter.q[30:26] == rom3.num_cases-1) {
+          unit_passed_s[2] = &cases_s[0:rom3.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.BOOLEAN;
+        }
+      test_unit.MULTIPLIER:
+        a = rom4.a;
+        b = rom4.b;
+        alufn = 6b000010;
+        exp_out = rom4.exp_out;
+        exp_z = rom4.exp_z;
+        exp_v = rom4.exp_v;
+        exp_n = rom4.exp_n;
+        unit_passed_s[3] = 0;
+        if(counter.q[30:26] == rom4.num_cases-1) {
+          unit_passed_s[3] = &cases_s[0:rom4.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.BOOLEAN;
+        }
+      test_unit.SHIFTER:
+        a = rom5.a;
+        b = rom5.b;
+        alufn = rom5.alufn;
+        exp_out = rom5.exp_out;
+        exp_z = rom5.exp_z;
+        exp_v = rom5.exp_v;
+        exp_n = rom5.exp_n;
+        unit_passed_s[4] = 0;
+        if(counter.q[30:26] == rom5.num_cases-1) {
+          unit_passed_s[4] = &cases_s[0:rom5.num_cases-1];
+          counter.d = 0;
+          test_unit.d = test_unit.DONE;
+        }
+      test_unit.DONE:
+        unit_passed_s = unit_passed_s;
+        exp_out = 0;
+        exp_z = 0;
+        exp_v = 0;
+        exp_n = 0;
+        counter.d = 0;
+      default: // unreachable
+        unit_passed_s = unit_passed_s;
+        exp_out = 0;
+        exp_z = 0;
+        exp_v = 0;
+        exp_n = 0;
+    }
+    cases_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n} ^ {exp_z, exp_v, exp_n});
+
+    cases = cases_s;
+    unit_passed = unit_passed_s;
+  }
+}

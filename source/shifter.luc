@@ -18,6 +18,10 @@ module shifter (
   ) {
   
   always {
+    result[0] = a << b;          // unsigned left shift 
+    result[1] = a >> b;          // unsigned right shift
+    result[2] = a >>> b;         // signed right shift
+    out = result[alufn[1:0]];
     case(alufn[1:0]) {
       2b00:
         out = a << b[3:0];  // unsiged left shift
