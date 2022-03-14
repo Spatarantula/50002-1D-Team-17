@@ -1,6 +1,2 @@
-work/vivado/*.*
-work/vivado
-work/build_output.log
-work/project.tcl
-work/alchitry.bin
+work/*.*
 .DS_Store

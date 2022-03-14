@@ -172,7 +172,7 @@ module test_fsm (
         exp_n = rom7.exp_n;
         unit_passed_s.d[6] = 0;
         if(counter.q[30:26] == rom7.num_cases) {
-          unit_passed_s.d[6] = &test_cases_passed_s.q[4d5:0];
+          unit_passed_s.d[6] = &test_cases_passed_s.q[4d5:0]; // hardcoded values of num_cases(6) - 1
           counter.d = 0;
           test_unit.d = test_unit.DONE;
         }
