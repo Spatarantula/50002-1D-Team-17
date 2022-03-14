@@ -55,7 +55,9 @@ module test_fsm (
         b = rom1.b;
         alufn = rom1.alufn;
         exp_out = rom1.exp_out;
-        exp_zvn = rom1.exp_zvn;
+        exp_z = rom1.exp_z;
+        exp_v = rom1.exp_v;
+        exp_n = rom1.exp_n;
         unit_passed_s[0] = 0;
         if(counter.q[30:26] == rom1.num_cases-1) {
           unit_passed_s[0] = &cases_s[0:rom5.num_cases-1];
@@ -67,7 +69,9 @@ module test_fsm (
         b = rom2.b;
         alufn = rom2.alufn;
         exp_out = rom2.exp_out;
-        exp_zvn = rom2.exp_zvn;
+        exp_z = rom2.exp_z;
+        exp_v = rom2.exp_v;
+        exp_n = rom2.exp_n;
         unit_passed_s[1] = 0;
         if(counter.q[30:26] == rom2.num_cases-1) {
           unit_passed_s[1] = &cases_s[0:rom2.num_cases-1];
@@ -79,7 +83,9 @@ module test_fsm (
         b = rom3.b;
         alufn = rom3.alufn;
         exp_out = rom3.exp_out;
-        exp_zvn = rom3.exp_zvn;
+        exp_z = rom3.exp_z;
+        exp_v = rom3.exp_v;
+        exp_n = rom3.exp_n;
         unit_passed_s[2] = 0;
         if(counter.q[30:26] == rom3.num_cases-1) {
           unit_passed_s[2] = &cases_s[0:rom3.num_cases-1];
@@ -91,7 +97,9 @@ module test_fsm (
         b = rom4.b;
         alufn = 6b000010;
         exp_out = rom4.exp_out;
-        exp_zvn = rom4.exp_zvn;
+        exp_z = rom4.exp_z;
+        exp_v = rom4.exp_v;
+        exp_n = rom4.exp_n;
         unit_passed_s[3] = 0;
         if(counter.q[30:26] == rom4.num_cases-1) {
           unit_passed_s[3] = &cases_s[0:rom4.num_cases-1];
@@ -103,7 +111,9 @@ module test_fsm (
         b = rom5.b;
         alufn = rom5.alufn;
         exp_out = rom5.exp_out;
-        exp_zvn = rom5.exp_zvn;
+        exp_z = rom5.exp_z;
+        exp_v = rom5.exp_v;
+        exp_n = rom5.exp_n;
         unit_passed_s[4] = 0;
         if(counter.q[30:26] == rom5.num_cases-1) {
           unit_passed_s[4] = &cases_s[0:rom5.num_cases-1];
@@ -113,12 +123,16 @@ module test_fsm (
       test_unit.DONE:
         unit_passed_s = unit_passed_s;
         exp_out = 0;
-        exp_zvn = 0;
+        exp_z = 0;
+        exp_v = 0;
+        exp_n = 0;
         counter.d = 0;
       default: // unreachable
         unit_passed_s = unit_passed_s;
         exp_out = 0;
-        exp_zvn = 0;
+        exp_z = 0;
+        exp_v = 0;
+        exp_n = 0;
     }
     cases_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n} ^ {exp_zvn[2], exp_zvn[1], exp_zvn[0]});
 

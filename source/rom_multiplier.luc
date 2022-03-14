@@ -15,7 +15,9 @@ module rom_multiplier (
     output a[16],
     output b[16],
     output exp_out[16],
-    output exp_zvn[3],
+    output exp_z,
+    output exp_v,
+    output exp_n,
     output num_cases[5]
   ) {
 
@@ -29,6 +31,8 @@ module rom_multiplier (
     a = TEST_A[test_case];
     b = TEST_B[test_case];
     exp_out = EXP_OUT[test_case];
-    exp_zvn = EXP_ZVN[test_case];
+    exp_z = EXP_ZVN[test_case][2];
+    exp_v = EXP_ZVN[test_case][1];
+    exp_n = EXP_ZVN[test_case][0];
   }
 }
