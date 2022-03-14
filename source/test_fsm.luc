@@ -1,17 +1,17 @@
 /**
 * Tests the shifter with hard coded test cases and outputs
 *
-* @input clk          - the default clock input
-* @input rst          - the default reset input
+* @input clk                       - the default clock input
+* @input rst                       - the default reset input
 *
-* @output unit_passed - if a unit passes all its test cases, the bit corresponding to it is set to 1
-* @output cases       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
+* @output unit_passed              - if a unit passes all its test cases, the bit corresponding to it is set to 1
+* @output test_casses_passed       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
 */
 module test_fsm (
     input clk,
     input rst,
     output unit_passed[5],
-    output cases[32]
+    output test_cases_passed[32]
 ) {
   .clk(clk) {
     .rst(rst) {
@@ -39,7 +39,7 @@ module test_fsm (
   sig exp_z;
   sig exp_v;
   sig exp_n;
-  sig cases_s[16];
+  sig test_cases_passed_s[16];
   sig unit_passed_s[5];
     
   alu test_alu(.a(a), .b(b), .alufn(alufn));
@@ -48,9 +48,9 @@ module test_fsm (
     counter.d = counter.q+1;
 
     if(counter.q[30:26] == 0) {
-      cases_s = 16b0;
+      test_cases_passed_s = 16b0;
     }
-    cases_s = cases_s;
+    test_cases_passed_s = test_cases_passed_s;
     case(test_unit.q) {
       test_unit.ADDER:
         a = rom1.a;
@@ -62,7 +62,7 @@ module test_fsm (
         exp_n = rom1.exp_n;
         unit_passed_s[0] = 0;
         if(counter.q[30:26] == rom1.num_cases-1) {
-          unit_passed_s[0] = &cases_s[0:rom5.num_cases-1];
+          unit_passed_s[0] = &test_cases_passed_s[0:rom5.num_cases-1];
           counter.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
@@ -76,7 +76,7 @@ module test_fsm (
         exp_n = rom2.exp_n;
         unit_passed_s[1] = 0;
         if(counter.q[30:26] == rom2.num_cases-1) {
-          unit_passed_s[1] = &cases_s[0:rom2.num_cases-1];
+          unit_passed_s[1] = &test_cases_passed_s[0:rom2.num_cases-1];
           counter.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
@@ -90,7 +90,7 @@ module test_fsm (
         exp_n = rom3.exp_n;
         unit_passed_s[2] = 0;
         if(counter.q[30:26] == rom3.num_cases-1) {
-          unit_passed_s[2] = &cases_s[0:rom3.num_cases-1];
+          unit_passed_s[2] = &test_cases_passed_s[0:rom3.num_cases-1];
           counter.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
@@ -104,7 +104,7 @@ module test_fsm (
         exp_n = rom4.exp_n;
         unit_passed_s[3] = 0;
         if(counter.q[30:26] == rom4.num_cases-1) {
-          unit_passed_s[3] = &cases_s[0:rom4.num_cases-1];
+          unit_passed_s[3] = &test_cases_passed_s[0:rom4.num_cases-1];
           counter.d = 0;
           test_unit.d = test_unit.BOOLEAN;
         }
@@ -118,7 +118,7 @@ module test_fsm (
         exp_n = rom5.exp_n;
         unit_passed_s[4] = 0;
         if(counter.q[30:26] == rom5.num_cases-1) {
-          unit_passed_s[4] = &cases_s[0:rom5.num_cases-1];
+          unit_passed_s[4] = &test_cases_passed_s[0:rom5.num_cases-1];
           counter.d = 0;
           test_unit.d = test_unit.DONE;
         }
@@ -136,9 +136,9 @@ module test_fsm (
         exp_v = 0;
         exp_n = 0;
     }
-    cases_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n} ^ {exp_z, exp_v, exp_n});
+    test_cases_passed_s[counter.q[30:26]] = ~|(test_alu.out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n} ^ {exp_z, exp_v, exp_n});
 
-    cases = cases_s;
+    test_cases_passed = test_cases_passed_s;
     unit_passed = unit_passed_s;
   }
 }
