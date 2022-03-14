@@ -6,9 +6,9 @@
 * @input alufn -  6 bit control signal
 *   00 0000: a+b,
 *   00 0001: a-b,
-*   00 0010: a*b,
-*   00 0011: a/b,
-*   00 0100: a%b,
+*   00 0100: a*b,
+*   00 0101: a/b,
+*   00 0110: a%b,
 *   01 1000: a AND b,
 *   01 1110: a  OR b,
 *   01 0110: a XOR b,
@@ -60,7 +60,7 @@ module alu (
     compareALU.n = adderALU.n;
     
     // choose whether to add or multiply
-    case(alufn[1]) {
+    case(alufn[2]) {
       1b0:
         mul_or_add = adderALU.out;
       1b1:

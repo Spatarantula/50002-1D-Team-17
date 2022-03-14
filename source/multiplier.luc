@@ -18,10 +18,10 @@ module multiplier (
 
   always {
     div_by_zero = 0;
-    case(alufn[3:1]) {
-      3b010:
+    case(alufn[1:0]) {
+      2b00:
         out = a*b;
-      3b011:
+      2b01:
         if(b == 0) {
           div_by_zero = 1;
           out = 16b0;
@@ -29,7 +29,7 @@ module multiplier (
         else {
           out = a/b;
         }
-      3b100:
+      2b10:
         if(b == 0) {
           div_by_zero = 1;
           out = 16b0;
