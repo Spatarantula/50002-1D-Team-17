@@ -17,7 +17,9 @@ module rom_shifter (
     output b[16],
     output alufn[6],
     output exp_out[16],
-    output exp_zvn[3],
+    output exp_z,
+    output exp_v,
+    output exp_n,
     output num_cases[5]
   ) {
 
@@ -37,6 +39,8 @@ module rom_shifter (
     b = TEST_B[test_case];
     alufn = ALUFN[test_case];
     exp_out = EXP_OUT[test_case];
-    exp_zvn = EXP_ZVN[test_case];
+    exp_z = EXP_ZVN[test_case][2];
+    exp_V = EXP_ZVN[test_case][1];
+    exp_n = EXP_ZVN[test_case][0];
   }
 }
