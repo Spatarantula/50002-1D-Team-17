@@ -131,6 +131,7 @@ module test_fsm (
           exp_z = rom5.exp_z;
           exp_v = rom5.exp_v;
           exp_n = rom5.exp_n;
+          exp_e = rom5.exp_e;
           max_test_cases = rom5.num_cases;
           unit = 4;
         test_unit.MULTIPLIER2:
@@ -141,6 +142,7 @@ module test_fsm (
           exp_z = rom6.exp_z;
           exp_v = rom6.exp_v;
           exp_n = rom6.exp_n;
+          exp_e = rom6.exp_e;
           max_test_cases = rom6.num_cases;
           unit = 5;
         test_unit.SHIFTER:

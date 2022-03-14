@@ -29,7 +29,7 @@ module rom_shifter (
   const SHR = 6b100001;
   const SRA = 6b100011;
 
-  const TEST_A = {16d10, 16d567, 16d865, -16d10, -16d456, -16d678};
+  const TEST_A = {16d10, 16d567, 16d865, -16d10, -16d456, 16hFD5A};
   const TEST_B = {16d2, 16d3, 16d4, 16d2, 16d3, 16d4};
   const ALUFN = {SHL, SHR, SRA, SHL, SHR, SRA};
   const EXP_ZVN = {3b000, 3b000, 3b000, 3b001, 3b001, 3b001};
