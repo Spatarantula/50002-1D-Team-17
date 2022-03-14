@@ -4,6 +4,7 @@
 * @input clk                       - the default clock input
 * @input rst                       - the default reset input
 * @input error                     - if we want to simulate an error
+* @input start                     - for when we want to start the FSM
 *
 * @output unit_passed              - if a unit passes all its test cases, the bit corresponding to it is set to 1
 * @output test_casses_passed       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
@@ -13,6 +14,7 @@ module test_fsm (
     input clk,
     input rst,
     input error,
+    input start,
 
     output unit_passed[7],
     output test_cases_passed[16],
@@ -61,149 +63,151 @@ module test_fsm (
   alu test_alu(.a(a), .b(b), .alufn(alufn));
 
   always {
-    // since the counter is increased every clock cycle,
-    // and bits 30-26 are used to count, it gives us a counter
-    // which approximately increases once every 1.34 s
-    counter.d = counter.q+1;
+    if(start == 1) {
+      // since the counter is increased every clock cycle,
+      // and bits 30-26 are used to count, it gives us a counter
+      // which approximately increases once every 1.34 s
+      counter.d = counter.q+1;
 
-    complete = 0;
-    alufn = 0;
-    exp_out = 0;
-    exp_z = 0;
-    exp_v = 0;
-    exp_n = 0;
-    exp_e = 0; //division by 0
+      complete = 0;
+      alufn = 0;
+      exp_out = 0;
+      exp_z = 0;
+      exp_v = 0;
+      exp_n = 0;
+      exp_e = 0; //division by 0
 
-    // In each cycle, the test cases indicated by the counter's top 5 bits
-    // is loaded into the signals using this switch-case statement here
-    case(test_unit.q) {
-      test_unit.ADDER1:
-        a = rom1.a;
-        b = rom1.b;
-        alufn = rom1.alufn;
-        exp_out = rom1.exp_out;
-        exp_z = rom1.exp_z;
-        exp_v = rom1.exp_v;
-        exp_n = rom1.exp_n;
-        max_test_cases = rom1.num_cases;
-        unit = 0;
-      test_unit.ADDER2:
-        a = rom2.a;
-        b = rom2.b;
-        alufn = rom2.alufn;
-        exp_out = rom2.exp_out;
-        exp_z = rom2.exp_z;
-        exp_v = rom2.exp_v;
-        exp_n = rom2.exp_n;
-        max_test_cases = rom2.num_cases;
-        unit = 1;
-      test_unit.BOOLEAN:
-        a = rom3.a;
-        b = rom3.b;
-        alufn = rom3.alufn;
-        exp_out = rom3.exp_out;
-        exp_z = rom3.exp_z;
-        exp_v = rom3.exp_v;
-        exp_n = rom3.exp_n;
-        max_test_cases = rom3.num_cases;
-        unit = 2;
-      test_unit.COMPARE:
-        a = rom4.a;
-        b = rom4.b;
-        alufn = rom4.alufn;
-        exp_out = rom4.exp_out;
-        exp_z = rom4.exp_z;
-        exp_v = rom4.exp_v;
-        exp_n = rom4.exp_n;
-        max_test_cases = rom4.num_cases;
-        unit = 3;
-      test_unit.MULTIPLIER1:
-        a = rom5.a;
-        b = rom5.b;
-        alufn = rom5.alufn;
-        exp_out = rom5.exp_out;
-        exp_z = rom5.exp_z;
-        exp_v = rom5.exp_v;
-        exp_n = rom5.exp_n;
-        max_test_cases = rom5.num_cases;
-        unit = 4;
-      test_unit.MULTIPLIER2:
-        a = rom6.a;
-        b = rom6.b;
-        alufn = rom6.alufn;
-        exp_out = rom6.exp_out;
-        exp_z = rom6.exp_z;
-        exp_v = rom6.exp_v;
-        exp_n = rom6.exp_n;
-        max_test_cases = rom6.num_cases;
-        unit = 5;
-      test_unit.SHIFTER:
-        a = rom7.a;
-        b = rom7.b;
-        alufn = rom7.alufn;
-        exp_out = rom7.exp_out;
-        exp_z = rom7.exp_z;
-        exp_v = rom7.exp_v;
-        exp_n = rom7.exp_n;
-        max_test_cases = rom7.num_cases;
-        unit = 6;
-      test_unit.DONE:
-        // fix the counter to 0 and mark the testing as completed
-        unit = -1;
-        max_test_cases = 0;
-        counter.d = 0;
-        complete = 1;
-      default: // unreachable
-        max_test_cases = 0;
-        unit = -1;
-    }
+      // In each cycle, the test cases indicated by the counter's top 5 bits
+      // is loaded into the signals using this switch-case statement here
+      case(test_unit.q) {
+        test_unit.ADDER1:
+          a = rom1.a;
+          b = rom1.b;
+          alufn = rom1.alufn;
+          exp_out = rom1.exp_out;
+          exp_z = rom1.exp_z;
+          exp_v = rom1.exp_v;
+          exp_n = rom1.exp_n;
+          max_test_cases = rom1.num_cases;
+          unit = 0;
+        test_unit.ADDER2:
+          a = rom2.a;
+          b = rom2.b;
+          alufn = rom2.alufn;
+          exp_out = rom2.exp_out;
+          exp_z = rom2.exp_z;
+          exp_v = rom2.exp_v;
+          exp_n = rom2.exp_n;
+          max_test_cases = rom2.num_cases;
+          unit = 1;
+        test_unit.BOOLEAN:
+          a = rom3.a;
+          b = rom3.b;
+          alufn = rom3.alufn;
+          exp_out = rom3.exp_out;
+          exp_z = rom3.exp_z;
+          exp_v = rom3.exp_v;
+          exp_n = rom3.exp_n;
+          max_test_cases = rom3.num_cases;
+          unit = 2;
+        test_unit.COMPARE:
+          a = rom4.a;
+          b = rom4.b;
+          alufn = rom4.alufn;
+          exp_out = rom4.exp_out;
+          exp_z = rom4.exp_z;
+          exp_v = rom4.exp_v;
+          exp_n = rom4.exp_n;
+          max_test_cases = rom4.num_cases;
+          unit = 3;
+        test_unit.MULTIPLIER1:
+          a = rom5.a;
+          b = rom5.b;
+          alufn = rom5.alufn;
+          exp_out = rom5.exp_out;
+          exp_z = rom5.exp_z;
+          exp_v = rom5.exp_v;
+          exp_n = rom5.exp_n;
+          max_test_cases = rom5.num_cases;
+          unit = 4;
+        test_unit.MULTIPLIER2:
+          a = rom6.a;
+          b = rom6.b;
+          alufn = rom6.alufn;
+          exp_out = rom6.exp_out;
+          exp_z = rom6.exp_z;
+          exp_v = rom6.exp_v;
+          exp_n = rom6.exp_n;
+          max_test_cases = rom6.num_cases;
+          unit = 5;
+        test_unit.SHIFTER:
+          a = rom7.a;
+          b = rom7.b;
+          alufn = rom7.alufn;
+          exp_out = rom7.exp_out;
+          exp_z = rom7.exp_z;
+          exp_v = rom7.exp_v;
+          exp_n = rom7.exp_n;
+          max_test_cases = rom7.num_cases;
+          unit = 6;
+        test_unit.DONE:
+          // fix the counter to 0 and mark the testing as completed
+          unit = -1;
+          max_test_cases = 0;
+          counter.d = 0;
+          complete = 1;
+        default: // unreachable
+          max_test_cases = 0;
+          unit = -1;
+      }
 
-    alu_out = test_alu.out;
-    
-    if(error == 1)
-      alu_out = ~alu_out;
+      alu_out = test_alu.out;
       
-    test_cases_passed_s.d[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
+      if(error == 1)
+        alu_out = ~alu_out;
+        
+      test_cases_passed_s.d[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
 
-    test_cases_passed = test_cases_passed_s.q;
+      test_cases_passed = test_cases_passed_s.q;
 
-    // if all the test cases of a ROM have been checked
-    // determine if all of them were a pass and set the corresponding
-    // unit_passed flag accordingly. Advance the FSM to the next state
-    unit_passed = unit_passed_s.q;
-    if(counter.q[30:26] == max_test_cases) {
-      counter.d = 0;
-      case(unit) {
-        0:
-          test_unit.d = test_unit.ADDER2;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[13:0];
-        1:
-          test_unit.d = test_unit.BOOLEAN;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
-        2:
-          test_unit.d = test_unit.COMPARE;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
-        3:
-          test_unit.d = test_unit.MULTIPLIER1;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[15:0];
-        4:
-          test_unit.d = test_unit.MULTIPLIER2;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[12:0];
-        5:
-          test_unit.d = test_unit.SHIFTER;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
-        6:
-          test_unit.d = test_unit.DONE;
-          test_cases_passed_s.d = 0;
-          unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
-        default:
-          unit_passed_s.d = unit_passed_s.q;
+      // if all the test cases of a ROM have been checked
+      // determine if all of them were a pass and set the corresponding
+      // unit_passed flag accordingly. Advance the FSM to the next state
+      unit_passed = unit_passed_s.q;
+      if(counter.q[30:26] == max_test_cases) {
+        counter.d = 0;
+        case(unit) {
+          0:
+            test_unit.d = test_unit.ADDER2;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[13:0];
+          1:
+            test_unit.d = test_unit.BOOLEAN;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
+          2:
+            test_unit.d = test_unit.COMPARE;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[7:0];
+          3:
+            test_unit.d = test_unit.MULTIPLIER1;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[15:0];
+          4:
+            test_unit.d = test_unit.MULTIPLIER2;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[12:0];
+          5:
+            test_unit.d = test_unit.SHIFTER;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
+          6:
+            test_unit.d = test_unit.DONE;
+            test_cases_passed_s.d = 0;
+            unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
+          default:
+            unit_passed_s.d = unit_passed_s.q;
+        }
       }
     }
   }
