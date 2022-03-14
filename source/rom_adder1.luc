@@ -1,7 +1,21 @@
+/**
+* ROM containing part1 of the test cases for the adder
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output alufn      -  6 bit alufn control signal for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_z      -  1 bit expected output for Z flags for the requested test 
+* @output exp_v      -  1 bit expected output for V flags for the requested test 
+* @output exp_n      -  1 bit expected output for N flags for the requested test 
+* @output num_cases  - the total number of test cases provided by this ROM
+*/
 module rom_adder1 (
-    input test_case[5], //test case selector
-    output num_cases[5], //total number of test cases in the rom
-    //fetching all the ALU inputs for each test case
+    input test_case[5],
+    output num_cases[5],
+
     output a[16], 
     output b[16],
     output alufn[6],
@@ -11,14 +25,14 @@ module rom_adder1 (
     output exp_n 
   ) {
 
-  //14 test cases for normal addition, normal subtraction, checking for accuracy of z and n output
+  // 14 test cases for normal addition, normal subtraction, checking for accuracy of z and n output
   //         addition                   subtraction                 z=1                                n check
   const A = {16hFFFF, 16h00FF, 16h00FF, 16hFFFF, 16h00FF, 16h00FF, 16h00FF, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
   
   //         addition                   subtraction                 z=1                                n check
   const B = {16hFFFF, 16h01FF, 16hFFFF, 16hFFFE, 16h01FF, 16hFFFF, 16hFF01, 16h0000, 16hFFFF, 16h00FF, 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
   
-  //all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
+  // all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
   //                    addition       subtraction    z=1                 n check
   const ALUFN_SIGNAL = {6h0, 6h0, 6h0, 6h1, 6h1, 6h1, 6h0, 6h0, 6h1, 6h1, 6h0, 6h0, 6h1, 6h1};
   

@@ -4,8 +4,8 @@
     <src>multiplier.luc</src>
     <src>shifter.luc</src>
     <src>rom_adder1.luc</src>
-    <src>rom_multiplier.luc</src>
     <component>counter.luc</component>
+    <src>rom_multiplier1.luc</src>
     <component>decoder.luc</component>
     <src>boolean.luc</src>
     <src top="true">au_top.luc</src>
@@ -15,6 +15,7 @@
     <component>reset_conditioner.luc</component>
     <src>adder.luc</src>
     <src>compare.luc</src>
+    <src>rom_multiplier2.luc</src>
     <src>rom_shifter.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>

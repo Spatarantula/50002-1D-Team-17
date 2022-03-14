@@ -24,6 +24,7 @@
 * @output z    -  1 bit, set to true if the result is 0
 * @output v    -  1 bit, set to true if there is an overflow
 * @output n    -  1 bit, set to true if the result is negative
+* @output e    -  1 bit, set to true if an arithmetic error occured (currently, the only error that can happen is div by 0 in multiplier)
 */
 module alu (
     input a[16],
@@ -32,7 +33,8 @@ module alu (
     output out[16],
     output z,
     output v,
-    output n
+    output n,
+    output e
   ) {
   
   // instantiate all the components
@@ -51,10 +53,16 @@ module alu (
   sig mul_or_add[16];
   
   always {
-    z = adderALU.z;
-    v = adderALU.v;
-    n = adderALU.n;
-    
+    e = 0;
+    z = 0;
+    v = 0;
+    n = 0;
+    if(alufn[5:4] == 2b11 || alufn[5:2] == 0) {
+      z = adderALU.z;
+      v = adderALU.v;
+      n = adderALU.n;
+    }
+
     compareALU.z = adderALU.z;
     compareALU.v = adderALU.v;
     compareALU.n = adderALU.n;
