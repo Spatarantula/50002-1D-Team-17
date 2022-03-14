@@ -1,0 +1,38 @@
+/**
+* ROM containing part1 of the test cases for the multiplier
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_e      -  1 bit expected output for E flag for the requested test case
+* @output num_cases  - the total number of test cases provided by this ROM
+*/
+module rom_multiplier1 (
+    input test_case[5],
+
+    output a[16],
+    output b[16],
+    output alufn[6],
+    output exp_out[16],
+    output exp_e,
+    output num_cases[5]
+  ) {
+  
+  // testing multiplication and division
+  const TEST_A =  {    16d0,    -16d5,     16d1,     16d1,    16d500,   16d500,   -16d500,     16d0,     16d5,     16d5,   -16d10,     16d3,    -16d5};
+  const TEST_B =  {    16d5,     16d0,    16d10,   -16d10,    16d500,  -16d500,   -16d500,     16d5,     16b0,     16d2,     16d2,    16b10,    16b10};
+  const ALUFN  =  {6b000100, 6b000100, 6b000100, 6b000100,  6b000100, 6b000100,  6b000101, 6b000101, 6b000101, 6b000101, 6b000101, 6b000101, 6b000101};
+  const EXP_OUT = {16d0,         16d0,    16d10,   -16d10, -16d12144, 16d12144, -16d12144,     16d0,     16d0,     16d2,    -16d5,     16d0,     16d0};
+  const EXP_E =   {0,               0,        0,        0,         0,        0,         0,        0,       1,        0,         0,        0,        0};
+
+  always {
+    num_cases = 5d13;
+    a = TEST_A[test_case];
+    b = TEST_B[test_case];
+    alufn = ALUFN[test_case];
+    exp_out = EXP_OUT[test_case];
+    exp_e = EXP_E[test_case];
+  }
+}
