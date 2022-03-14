@@ -1,0 +1,48 @@
+/**
+* ROM containing the test cases for the comparator
+* 
+* @input test_case   - test case number
+*
+* @output a          - 16 bit value of a for the requested test case
+* @output b          - 16 bit value of b for the requested test case
+* @output exp_out    - 16 bit expected output for the requested test case
+* @output exp_zvn    -  3 bit expected output for ZVN flags for the requested test case
+* @output num_cases  -  5 bit value of total number of test cases provided by this ROM
+*/
+
+module rom_comparator1 (
+    input test_case[5],
+
+    output a[16],
+    output b[16],
+    output alufn[6],
+    output exp_out[16],
+    output exp_z,
+    output exp_v,
+    output exp_n,
+    output num_cases[5]
+  ) {
+  
+  // ALUFN Codes for respective comparator functionality
+  const CMPEQ = 6b110011;
+  const CMPLT = 6b110101;
+  const CMPLE = 6b110111;
+  
+  const TEST_A  = { 16d567, -16d885, 16d30, -16d32500, 16d670, \   16d210, -16d500, 16d120, -16d100, 16d670, 16d00,  \   16d32500, 16d865, 16d10, -16d100, 16d670};
+  const TEST_B  = {-16d210, -16d460, 16d30, 16d300, 16d678,    \  -16d210, -16d500, 16d120, 16d100, 16d678, -16d00,  \  -16d300, -16d500, 16d10, 16d100, 16d678};
+  const ALUFN   = { CMPLE, CMPLE, CMPLE, CMPLE, CMPLE,         \   CMPEQ, CMPEQ, CMPEQ, CMPEQ, CMPEQ, CMPEQ,         \   CMPLT, CMPLT, CMPLT, CMPLT, CMPLT};
+  const EXP_OUT = { 16h00, 16h01, 16h01, 16h01, 16h01,         \   16h00, 16h01, 16h01, 16h00, 16h00, 16h01,         \   16h00, 16h00, 16h00, 16h01, 16h01};
+  const EXP_ZVN = { 3b000, 3b001, 3b100, 3b010, 3b000,         \   3b001, 3b000, 3b000, 3b000, 3b001, 3b100,         \   3b011, 3b000, 3b100, 3b001, 3b001};
+
+  always {
+    // Refer to Testcases via test_case input as ROM address
+    num_cases = 5d16; // 5 cases for CMPLE, 6 cases for CMPEQ, 5 cases for CMPLT
+    a = TEST_A[test_case];
+    b = TEST_B[test_case];
+    alufn = ALUFN[test_case];
+    exp_out = EXP_OUT[test_case];
+    exp_z = EXP_ZVN[test_case][2];
+    exp_v = EXP_ZVN[test_case][1];
+    exp_n = EXP_ZVN[test_case][0];
+  }
+}
