@@ -30,7 +30,7 @@ module rom_adder2 (
   
   const B = {16hFFFF, 16h8000, 16h7FFF, 16h0001, 16h0001, 16h7FFF, 16hFFFF, 16h8000};
   
-  //all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
+  // all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
   const ALUFN_SIGNAL = {6h0, 6h0, 6h0, 6h0, 6h1, 6h1, 6h1, 6h1};
   
   const EXPECTED_OUTPUT_SUM = {16h7FFF, 16h0000, 16hFFFE, 16h8000, 16h7FFF, 16h0001, 16h8000, 16hFFFF};
