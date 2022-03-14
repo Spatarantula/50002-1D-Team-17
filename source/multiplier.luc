@@ -3,16 +3,42 @@
 *
 * @input a     - 16 bit input from reg A
 * @input b     - 16 bit input from reg B
+* @input alufn -  6 bit alufn control signal
 *
 * @output out  - 16 bit result of the mulitplication
 */
 module multiplier (
     input a[16],
     input b[16],
-    output out[16]
+    input alufn[6],
+    
+    output out[16],
+    output div_by_zero
   ) {
 
   always {
-    out = a*b;
+    div_by_zero = 0;
+    case(alufn[3:1]) {
+      3b010:
+        out = a*b;
+      3b011:
+        if(b == 0) {
+          div_by_zero = 1;
+          out = 16b0;
+        }
+        else {
+          out = a/b;
+        }
+      3b100:
+        if(b == 0) {
+          div_by_zero = 1;
+          out = 16b0;
+        }
+        else {
+          out = a-(a/b)*a;
+        }
+      default:
+        out = 16b0;
+    }
   }
 }
