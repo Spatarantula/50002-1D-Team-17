@@ -54,6 +54,7 @@ module test_fsm (
   sig exp_v;
   sig exp_n;
 
+  // this signal is assigned the max number of test cases supplied by each ROM
   sig max_test_cases[5];
   sig unit[3];
 
@@ -70,6 +71,8 @@ module test_fsm (
     unit_passed = 0;
     test_cases_passed = 0;
     complete = 0;
+
+    // we only want to start and advance through the FSM when the FPGA is in auto mode
     if(start == 1) {
       // since the counter is increased every clock cycle,
       // and bits 30-26 are used to count, it gives us a counter
@@ -82,7 +85,7 @@ module test_fsm (
       exp_z = 0;
       exp_v = 0;
       exp_n = 0;
-      exp_e = 0; //division by 0
+      exp_e = 0; //division by 0 error
 
       // In each cycle, the test cases indicated by the counter's top 5 bits
       // is loaded into the signals using this switch-case statement here
@@ -183,14 +186,14 @@ module test_fsm (
       //if an error input is detected, the output bits are flipped
       if(error == 1)
         alu_out = ~alu_out;
-        
+      
+      // check if the output produced by the alu matches the expected outputs from the ROM. If yes, turn on the LED associated with this test case
       test_cases_passed_s.d[counter.q[30:26]] = (alu_out == exp_out) && (test_alu.z == exp_z) && (test_alu.v == exp_v) && (test_alu.n == exp_n) && (test_alu.e == exp_e);
 
       test_cases_passed = test_cases_passed_s.q;
 
-      // if all the test cases of a ROM have been checked
-      // determine if all of them were a pass and set the corresponding
-      // unit_passed flag accordingly. Advance the FSM to the next state
+      // if all the test cases of a ROM have been checked, we determine if all of them passed and set the corresponding
+      // unit_passed flag accordingly and advance the FSM to the next state so that the next ROM can be checked
       unit_passed = unit_passed_s.q;
       if(counter.q[30:26] == max_test_cases) {
         counter.d = 0;
