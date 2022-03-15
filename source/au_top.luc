@@ -15,9 +15,16 @@ module au_top (
   
   .clk(clk) {
     .rst(rst) {
+<<<<<<< HEAD
       // fsm state = {START, MANUAL, AUTO};
       // test_fsm tester(.error(io_button[0]));
       // manual_test manual(.io_shield_button(io_button), .io_shield_dip(io_dip)); //instance of the manual tester
+=======
+      fsm state = {START, MANUAL, AUTO};
+      test_fsm tester(.error(io_button[0]));
+      manual_test manual(.io_shield_button(io_button), .io_shield_dip(io_dip)); //instance of the manual tester
+      wave wave1; //fancy wave effect
+>>>>>>> e10e6f6b8f7be92c7ab9f31fed7692adea452dda
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
     // clock. This ensures the entire FPGA comes out of reset at the same time.
@@ -49,6 +56,9 @@ module au_top (
 
     // case (state.q) {
     //   state.START:
+    //     io_led[0] = wave1.out;
+    //     io_led[1] = wave1.out;
+    //     io_led[2] = wave1.out;
     //     if (io_button[3]) {// left io button --> manual test mode
     //       state.d = state.MANUAL;
     //     } 
