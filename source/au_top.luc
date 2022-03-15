@@ -19,6 +19,7 @@ module au_top (
       test_fsm tester(.error(io_dip[2][7]));
       manual_test manual(.io_shield_button(io_button), .io_shield_dip(io_dip)); // instance of the manual tester
       wave wave1;                                                               // fancy wave effect
+      multi_seven_seg seven_seg_display;
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
     // clock. This ensures the entire FPGA comes out of reset at the same time.
@@ -60,6 +61,12 @@ module au_top (
         io_led[2][6] = manual.v;
         io_led[2][5] = manual.n;
         io_led[2][4] = manual.e;
+
+        seven_seg_display.values = $build(manual.out, 4)
+        
+        io_seg = seven_seg_display.seg;
+        io_sel = seven_seg_display.sel;
+
         if (io_button[1]) {  // if the io_button[1] is pressed, return to start state.
           state.d = state.START;
         }

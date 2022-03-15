@@ -8,7 +8,7 @@
 
 module seven_seg (
     input char[5],
-    output segs[7]
+    output segs[8]
   ) {
  
 //  0-9, letters to be represented using decimal point, A-F, blank, P, S, I, L, n,
