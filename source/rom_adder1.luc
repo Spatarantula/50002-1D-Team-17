@@ -12,6 +12,7 @@
 * @output exp_n      -  1 bit expected output for N flags for the requested test 
 * @output num_cases  - the total number of test cases provided by this ROM
 */
+
 module rom_adder1 (
     input test_case[5],
     
@@ -26,36 +27,36 @@ module rom_adder1 (
   ) {
 
   // 14 test cases for normal addition, normal subtraction, checking for accuracy of z and n output
-  //         addition                   subtraction                 z=1                                n check
-  const A = {16hFFFF, 16h00FF, \ 16h00FF, 16hFFFF, 16h00FF, 16h00FF, \ 16h00FF, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
+  //               addition                   subtraction                  z=1                                   n check
+  const TEST_A =  {16hFFFF, 16h00FF, 16h00FF, \ 16hFFFF, 16h00FF, 16h00FF, \ 16h00FF, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFE, 16h00F0};
   
-  //         addition                   subtraction                 z=1                                n check
-  const B = {16hFFFF, 16h01FF, \ 16hFFFF, 16hFFFE, 16h01FF, 16hFFFF, \ 16hFF01, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
+  const TEST_B =  {16hFFFF, 16h01FF, 16hFFFF, \ 16hFFFE, 16h01FF, 16hFFFF, \ 16hFF01, 16h0000, 16hFFFF, 16h00FF, \ 16hFFFE, 16h01FF, 16hFFFA, 16h02FF};
   
-  // all the ALUFN_SIGNALs for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
-  //                    addition       subtraction    z=1                 n check
-  const ALUFN_SIGNAL = {6h0, 6h0, \ 6h0, 6h1, 6h1, 6h1, \ 6h0, 6h0, 6h1, 6h1, \ 6h0, 6h0, 6h1, 6h1};
+  // all the ALUFN signals for each test case alufn0 = 0 --> add, alufn0 = 1 --> subtract
+  //               addition                   subtraction                  z=1                                   n check
+  const ALUFN =   {    6h0,     6h0,     6h0, \     6h1,     6h1,     6h1, \     6h0,     6h0,     6h1,     6h1, \ 6h0,     6h0,     6h1,     6h1};
   
-  //                           addition                   subtraction                 z=1                                n check
-  const EXPECTED_OUTPUT_SUM = {16hFFFE, 16h02FE, \ 16h00FE, 16h0001, 16hFF00, 16h0100, \ 16h0000, 16h0000, 16h0000, 16h0000, \ 16hFFFC, 16h03FE, 16h0004, 16hFDF1};
+  // all the expected outputs for each test case
+  //               addition                   subtraction                  z=1                                   n check
+  const EXP_OUT = {16hFFFE, 16h02FE, 16h00FE, \ 16h0001, 16hFF00, 16h0100, \ 16h0000, 16h0000, 16h0000, 16h0000, \ 16hFFFC, 16h03FE, 16h0004, 16hFDF1};
   
-  //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_Z = {1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b1, 1b1, 1b1, 1b1, \ 1b0, 1b0, 1b0, 1b0};
+  //               addition                   subtraction                  z=1                                   n check
+  const EXP_Z =   {    1b0,     1b0,     1b0, \     1b0,     1b0,     1b0, \     1b1,     1b1,     1b1,     1b1, \     1b0,     1b0,     1b0,     1b0};
   
-  //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_V = {1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b0, 1b0, 1b0, 1b0};
+  //               addition                   subtraction                  z=1                                   n check
+  const EXP_V =   {    1b0,     1b0,     1b0, \     1b0,     1b0,     1b0, \     1b0,     1b0,     1b0,     1b0, \     1b0,     1b0,     1b0,     1b0};
   
-  //                         addition       subtraction    z=1                 n check
-  const EXPECTED_OUTPUT_N = {1b1, 1b0, \ 1b0, 1b0, 1b1, 1b0, \ 1b0, 1b0, 1b0, 1b0, \ 1b1, 1b0, 1b0, 1b1};
+  //               addition                   subtraction                  z=1                                   n check
+  const EXP_N =   {    1b1,     1b0,     1b0, \     1b0,     1b1,     1b0, \     1b0,     1b0,     1b0,     1b0, \     1b1,     1b0,     1b0,     1b1};
   
   always {
     num_cases = 5d14;
-    a = A[test_case];
-    b = B[test_case];
-    alufn = ALUFN_SIGNAL[test_case];
-    exp_out = EXPECTED_OUTPUT_SUM[test_case];
-    exp_z = EXPECTED_OUTPUT_Z[test_case];
-    exp_v = EXPECTED_OUTPUT_V[test_case];
-    exp_n = EXPECTED_OUTPUT_N[test_case];
+    a = TEST_A[test_case];
+    b = TEST_B[test_case];
+    alufn = ALUFN[test_case];
+    exp_out = EXP_OUT[test_case];
+    exp_z = EXP_Z[test_case];
+    exp_v = EXP_V[test_case];
+    exp_n = EXP_N[test_case];
   }
 }

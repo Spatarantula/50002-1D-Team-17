@@ -1,3 +1,7 @@
+/**
+* Alchitry IO Board Interface
+*/
+
 module au_top (
     input clk,              // 100MHz clock
     input rst_n,            // reset button (active low)
@@ -25,8 +29,6 @@ module au_top (
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
   }
-  
-  // alu testALU;
 
   always {
     reset_cond.in = ~rst_n; // input raw inverted reset signal
@@ -47,24 +49,23 @@ module au_top (
         io_led[0] = wave1.out;
         io_led[1] = wave1.out;
         io_led[2] = wave1.out;
-        if (io_button[3]) {// left io button --> manual test mode
+        if (io_button[3]) {                 // left io button --> manual test mode
           state.d = state.MANUAL;
         } 
-        if (io_button[4]) {// right io button --> auto test mode
+        if (io_button[4]) {                 // right io button --> auto test mode
           state.d = state.AUTO;
         }
  
       state.MANUAL:
         // displaying the inputs/outputs on the LED rows and the 7 seg display
-
-        io_led[2][3:0] = manual.manual_state;
-        io_led[0] = manual.out[7:0];
-        io_led[1] = manual.out[15:8];
         io_led[2][7] = manual.z;
         io_led[2][6] = manual.v;
         io_led[2][5] = manual.n;
         io_led[2][4] = manual.e;
-
+        io_led[2][3:0] = manual.manual_state;
+        io_led[1] = manual.out[15:8];
+        io_led[0] = manual.out[7:0];
+        
         seven_seg_display.values[0] = manual.out[3:0];
         seven_seg_display.values[1] = manual.out[7:4];
         seven_seg_display.values[2] = manual.out[11:8];
@@ -73,7 +74,7 @@ module au_top (
         io_seg = seven_seg_display.seg;
         io_sel = seven_seg_display.sel;
 
-        if (io_button[1]) {  // if the io_button[1] is pressed, return to start state.
+        if (io_button[1]) {                 // if the center io_button is pressed, return to start state.
           state.d = state.START;
         }
           
@@ -89,7 +90,7 @@ module au_top (
         // one LED represents one test case. A pass lights the LED, a fail doesn't light the LED.
         io_led[1] = tester.test_cases_passed[15:8];
         io_led[0] = tester.test_cases_passed[7:0];
-        if (io_button[1]) {  // if the io_button[1] is pressed, return to start state
+        if (io_button[1]) {                 // if the center io_button is pressed, return to start state.
           state.d = state.START;
         }
     }

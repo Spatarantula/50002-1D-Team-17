@@ -10,22 +10,26 @@
 * @output test_casses_passed       - 16 bit output to signify the result of each test case (max 16 test cases per unit)
 * @output complete                 - flag to indicate when the testing is complete
 */
-module test_fsm (
-    input clk,
-    input rst,
-    input error,
-    input start,
 
+module test_fsm (
+    input clk,   // clock
+    input rst,   // reset
+    input error, // io_dip[2][7] on IO
+    input start, // start input from au_top when state.AUTO is selected
+
+    // outputs from the fsm, to be reflected on the IO element
     output unit_passed[7],
     output test_cases_passed[16],
     output complete
 ) {
+
   .clk(clk) {
     .rst(rst) {
       fsm test_unit = {ADDER1, ADDER2, BOOLEAN, COMPARE, MULTIPLIER1, MULTIPLIER2, SHIFTER, DONE};
-      dff counter[31](#INIT(0)); // the high 5 bits of this are used as a counter for test cases
-      dff unit_passed_s[7](#INIT(0));
-      dff test_cases_passed_s[16](#INIT(0));
+
+      dff counter[31](#INIT(0));             // the high 5 bits of this are used as a counter for test cases
+      dff unit_passed_s[7](#INIT(0));        // store the values determining whether the test_units have passed
+      dff test_cases_passed_s[16](#INIT(0)); // store the values determining which test cases of the respective test_units have passed
     }
   }
   
@@ -83,6 +87,7 @@ module test_fsm (
       // In each cycle, the test cases indicated by the counter's top 5 bits
       // is loaded into the signals using this switch-case statement here
       case(test_unit.q) {
+        // refers to rom_adder1 and results are verified
         test_unit.ADDER1:
           a = rom1.a;
           b = rom1.b;
@@ -93,6 +98,7 @@ module test_fsm (
           exp_n = rom1.exp_n;
           max_test_cases = rom1.num_cases;
           unit = 0;
+        // refers to rom_adder2 and results are verified
         test_unit.ADDER2:
           a = rom2.a;
           b = rom2.b;
@@ -103,6 +109,7 @@ module test_fsm (
           exp_n = rom2.exp_n;
           max_test_cases = rom2.num_cases;
           unit = 1;
+        // refers to rom_booean and results are verified
         test_unit.BOOLEAN:
           a = rom3.a;
           b = rom3.b;
@@ -113,6 +120,7 @@ module test_fsm (
           exp_n = rom3.exp_n;
           max_test_cases = rom3.num_cases;
           unit = 2;
+        // refers to rom_comparator and results are verified
         test_unit.COMPARE:
           a = rom4.a;
           b = rom4.b;
@@ -123,6 +131,7 @@ module test_fsm (
           exp_n = rom4.exp_n;
           max_test_cases = rom4.num_cases;
           unit = 3;
+        // refers to rom_multiplier1 and results are verified
         test_unit.MULTIPLIER1:
           a = rom5.a;
           b = rom5.b;
@@ -134,6 +143,7 @@ module test_fsm (
           exp_e = rom5.exp_e;
           max_test_cases = rom5.num_cases;
           unit = 4;
+        // refers to rom_multiplier2 and results are verified
         test_unit.MULTIPLIER2:
           a = rom6.a;
           b = rom6.b;
@@ -145,6 +155,7 @@ module test_fsm (
           exp_e = rom6.exp_e;
           max_test_cases = rom6.num_cases;
           unit = 5;
+        // refers to rom_shifter and results are verified
         test_unit.SHIFTER:
           a = rom7.a;
           b = rom7.b;
@@ -155,6 +166,7 @@ module test_fsm (
           exp_n = rom7.exp_n;
           max_test_cases = rom7.num_cases;
           unit = 6;
+        // all test cases from all states have been executed 
         test_unit.DONE:
           // fix the counter to 0 and mark the testing as completed
           unit = -1;
@@ -168,6 +180,7 @@ module test_fsm (
 
       alu_out = test_alu.out;
       
+      //if an error input is detected, the output bits are flipped
       if(error == 1)
         alu_out = ~alu_out;
         

@@ -26,12 +26,22 @@ module rom_multiplier2 (
     output num_cases[5]
   ) {
   
-  // testing modulo
+  // 6 test cases for modulus
+  //               modulus
   const TEST_A =  {    16d0,     16d5,     16d5,   -16d10,     16d3,    -16d5};
+
   const TEST_B =  {    16d5,     16d0,     16d2,     16d2,    16d10,    16d10};
+
+  // all the ALUFN signals for each test case
+  //               modulus
   const ALUFN  =  {6b000110, 6b000110, 6b000110, 6b000110, 6b000110, 6b000110};
+
+  // all the expected outputs for each test case
+  //               modulus
   const EXP_OUT = {    16d0,     16d0,     16d1,     16d0,     16d3,    -16d5};
+
   const EXP_ZVN = {   3b000,    3b000,    3b000,    3b001,    3b000,    3b000};
+
   const EXP_E =   {       0,        1,        0,        0,        0,        0};
 
   always {

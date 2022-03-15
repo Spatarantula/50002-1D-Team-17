@@ -15,6 +15,7 @@
 *
 * @output out  - 16 bit result of the bitwise operation performed
 */
+
 module boolean (
     input a[16],
     input b[16],
