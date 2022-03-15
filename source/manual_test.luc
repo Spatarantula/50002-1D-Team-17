@@ -41,7 +41,7 @@ module manual_test (
       state.LISTEN_A:
         manual_state[0] = 1b1;
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
-        if (io_shield_button[0]) {                       // if the io_shield_button[0] is pressed, save the input from the DIP switches and move on to the next state
+        if (io_shield_button[0]) {                        // if the io_shield_button[0] (top button) is pressed, save the input from the DIP switches and move on to the next state
           aInput.d = dip_in.q;
           state.d = state.LISTEN_B;
         }
@@ -49,9 +49,9 @@ module manual_test (
  
       state.LISTEN_B:
         manual_state[1] = 1b1;
-        aInput.d = aInput.q;                             // allow aInput to store data of input a
+        aInput.d = aInput.q;                              // allow aInput to store data of input a
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
-        if (io_shield_button[2]) {                        // if the io_shield_button[2] is pressed, move on to the next state, avoid using the same button as previous state to prevent the fsm from "zooming" past state LISTEN_B
+        if (io_shield_button[2]) {                        // if the io_shield_button[2] (bottom button) is pressed, move on to the next state, avoid using the same button as previous state to prevent the fsm from "zooming" past state LISTEN_B
           bInput.d = dip_in.q;
           state.d = state.LISTEN_ALUFN;
         }
@@ -59,9 +59,9 @@ module manual_test (
           
       state.LISTEN_ALUFN:
         manual_state[2] = 1b1;
-        bInput.d = bInput.q;               // allow bInput to store data of input b
-        dip_in.d = io_shield_dip[0][5:0];  // using the 2 rightmost rows of DIP switches to input the values
-        if (io_shield_button[0]) {          // if the io_shield_button[0] is pressed, move on to the next state
+        bInput.d = bInput.q;                // allow bInput to store data of input b
+        dip_in.d = io_shield_dip[0][5:0];   // using the 2 rightmost rows of DIP switches to input the values
+        if (io_shield_button[0]) {          // if the io_shield_button[0] (top button) is pressed, move on to the next state
           alufnInput.d = dip_in.q[5:0];
           state.d = state.CALC;
           }
@@ -70,7 +70,7 @@ module manual_test (
       state.CALC:
         alufnInput.d = alufnInput.q; // allow alufnInput to store data of input alufn
         
-        //connect the nodes of the alu instance to the DFFs containing the data
+        // connect the nodes of the alu instance to the DFFs containing the data
         aluTestInstance.a = aInput.q;
         aluTestInstance.b = bInput.q;
         aluTestInstance.alufn = alufnInput.q;
@@ -82,7 +82,7 @@ module manual_test (
         e = aluTestInstance.e;
         
         if (io_shield_button[2]) {
-          manual_state = 4b0;  // if the io_shield_button[0] is pressed, move return to initial state
+          manual_state = 4b0;       // if the io_shield_button[2] (top button) is pressed, move return to initial state
           state.d = state.LISTEN_A; //avoid using the same button as previous state to prevent the fsm from "zooming" past state CALC
         }
     }

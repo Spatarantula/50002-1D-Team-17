@@ -1,11 +1,10 @@
 /**
-* SEVEN SEG DISPLAY containing the test cases for the shifter
+* Map a number to the appropriate digit to display on the seven segment display
 * 
-* @input test_case   - test case number
+* @input char   - the number associated with the character to show
 *
-* @output seg          - one-hot key encoded value displayed on seven seg
+* @output segs  - 8 bit array indicating which parts of the seven segment display to light up
 */
-
 module seven_seg (
     input char[5],
     output segs[8]
