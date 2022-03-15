@@ -171,7 +171,7 @@ module test_fsm (
       if(error == 1)
         alu_out = ~alu_out;
         
-      test_cases_passed_s.d[counter.q[30:26]] = ~|(alu_out ^ exp_out) & ~|({test_alu.z, test_alu.v, test_alu.n, test_alu.e} ^ {exp_z, exp_v, exp_n, exp_e});
+      test_cases_passed_s.d[counter.q[30:26]] = (alu_out == exp_out) && (test_alu.z == exp_z) && (test_alu.v == exp_v) && (test_alu.n == exp_n) && (test_alu.e == exp_e);
 
       test_cases_passed = test_cases_passed_s.q;
 
