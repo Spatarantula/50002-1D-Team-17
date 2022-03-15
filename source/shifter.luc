@@ -24,7 +24,7 @@ module shifter (
       2b01:
         out = a >> b[3:0];  // unsiged right shift
       2b11:
-        out = a >>> b[3:0]; // siged/arithmetic right shift
+        out = $signed(a) >>> b[3:0]; // siged/arithmetic right shift
       default:
         out = 16b0;
     }
