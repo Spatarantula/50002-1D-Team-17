@@ -5,37 +5,38 @@
 *
 * @output segs  - 8 bit array indicating which parts of the seven segment display to light up
 */
+
 module seven_seg (
     input char[5],
     output segs[8]
   ) {
  
-//  0-9, letters to be represented using decimal point, A-F, blank, P, S, I, L, n,
+//  0-9, blank AND letters to be represented using decimal point - A-F, P, S, I, L, n,
 
   always {
     case (char) {
-      0: segs  = 8b00111111; // 0
-      1: segs  = 8b00000110; // 1
-      2: segs  = 8b01011011; // 2
-      3: segs  = 8b01001111; // 3
-      4: segs  = 8b01100110; // 4
-      5: segs  = 8b01101101; // 5
-      6: segs  = 8b01111101; // 6
-      7: segs  = 8b00000111; // 7
-      8: segs  = 8b01111111; // 8
-      9: segs  = 8b01100111; // 9
-      10: segs = 8b11110111; // A.
-      11: segs = 8b11111111; // B.
-      12: segs = 8b10111001; // C.
-      13: segs = 8b10111111; // D.
-      14: segs = 8b11111001; // E. 
-      15: segs = 8b11110001; // F.
-      16: segs = 8b00000000; // blank
-      17: segs = 8b11110011; // P.
-      18: segs = 8b11101101; // S.
-      19: segs = 8b10110000; // I.
-      20: segs = 8b10111000; // L.
-      21: segs = 8b10110111; // n.
+      0:  segs = 8b00111111;  // 0
+      1:  segs = 8b00000110;  // 1
+      2:  segs = 8b01011011;  // 2
+      3:  segs = 8b01001111;  // 3
+      4:  segs = 8b01100110;  // 4
+      5:  segs = 8b01101101;  // 5
+      6:  segs = 8b01111101;  // 6
+      7:  segs = 8b00000111;  // 7
+      8:  segs = 8b01111111;  // 8
+      9:  segs = 8b01100111;  // 9
+      10: segs = 8b11110111;  // A.
+      11: segs = 8b11111111;  // B.
+      12: segs = 8b10111001;  // C.
+      13: segs = 8b10111111;  // D.
+      14: segs = 8b11111001;  // E. 
+      15: segs = 8b11110001;  // F.
+      16: segs = 8b00000000;  // blank
+      17: segs = 8b11110011;  // P.
+      18: segs = 8b11101101;  // S.
+      19: segs = 8b10110000;  // I.
+      20: segs = 8b10111000;  // L.
+      21: segs = 8b10110111;  // n.
       default: segs = 8b00000000;
     }
   }

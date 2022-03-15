@@ -8,6 +8,7 @@
 * @output seg     - the inverted 8 bit code to use for lighting up the selected seven segment display
 * @output sel     - the inverted 4 bit code to select which seven segment display to light up
 */
+
 module multi_seven_seg(
     input clk,                // clock
     input rst,                // reset

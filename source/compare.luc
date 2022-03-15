@@ -10,9 +10,10 @@
 *   xx x10x: a <  b,
 *   xx x11x: a <= b,
 *
-* @output out  - the high 15 bits of the output are always 0. The LSB indicates the result
-*                of the comparison operation
+* @output out  -  the high 15 bits of the output are always 0. The LSB indicates the result
+*                 of the comparison operation
 */
+
 module compare (
     input z,
     input v,
@@ -25,11 +26,11 @@ module compare (
     out[15:1] = 15b0; // The first 15 bits of the output are always tied to ground
     
     case (alufn[2:1]) {
-      b01:         // Check CMPEQ - a == b
+      b01:            // Check CMPEQ - a == b
         out[0] = z;
-      b10:         // Check CMPLT - a <  b
+      b10:            // Check CMPLT - a <  b
         out[0] = n ^ v;
-      b11:         // Check CMPLE - a <= b
+      b11:            // Check CMPLE - a <= b
         out[0] = z | (n ^ v);
       default:
         out = b0;

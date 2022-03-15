@@ -4,32 +4,42 @@
 * @input a     - 16 bit input from reg A
 * @input b     - 16 bit input from reg B
 * @input alufn -  6 bit control signal
+*   adder unit
 *   00 0000: a+b,
 *   00 0001: a-b,
+*
+*   multiplier unit
 *   00 0100: a*b,
 *   00 0101: a/b,
 *   00 0110: a%b,
+*
+*   boolean unit
 *   01 1000: a AND b,
 *   01 1110: a  OR b,
 *   01 0110: a XOR b,
-*   01 1010: output a,
+*   01 1010: return a,
 *   01 0111: a NAND b,
 *   01 0001: a NOR b,
 *   01 1001: a XNOR b,
 *   01 1100: return b,
-*   10 0000: a  << b,  (unsiged left shift)
-*   10 0001: a  >> b,  (unsiged right shift)
-*   10 0011: a >>> b,  (siged/arithmetic right shift)
-*   11 0011: a == b,
-*   11 0101: a  < b,
-*   11 0111: a <= b,
+*
+*   shifter unit
+*   10 0000: a  << b,  (unsigned left shift)
+*   10 0001: a  >> b,  (unsigned right shift)
+*   10 0011: a >>> b,  (signed/arithmetic right shift)
+*
+*   compare unit
+*   11 0011: a == b,   (equals to)
+*   11 0101: a  < b,   (strictly less than)
+*   11 0111: a <= b,   (less than or equals to)
 *
 * @output out  - 16 bit result of the operation performed
-* @output z    -  1 bit, set to true if the result is 0
-* @output v    -  1 bit, set to true if there is an overflow
-* @output n    -  1 bit, set to true if the result is negative
+* @output z    -  1 bit, set to true if the result from adder is 0
+* @output v    -  1 bit, set to true if there is an overflow from adder
+* @output n    -  1 bit, set to true if the result from adder is negative
 * @output e    -  1 bit, set to true if an arithmetic error occured (currently, the only error that can happen is div by 0 in multiplier)
 */
+
 module alu (
     input a[16],
     input b[16],
@@ -52,7 +62,6 @@ module alu (
     compare compareALU;
   }
   
-   
   // temp variable to choose add/multiply
   sig mul_or_add[16];
   
@@ -66,7 +75,7 @@ module alu (
     compareALU.v = adderALU.v;
     compareALU.n = adderALU.n;
     
-    // choose whether to add or multiply
+    // choose whether to add or multiply (we used the ALUFN[2] signal instead of ALUFN[1] signal to standardise and enable easy access to the signals for multiplier 100, 101, 110)
     case(alufn[2]) {
       1b0:
         mul_or_add = adderALU.out;
@@ -77,7 +86,7 @@ module alu (
         mul_or_add = 16h0;
     }
     
-    // choose one of the functions of the ALU using the top two bits of the ALUFN
+    // choose one of the functions of the ALU using the two most significant bits of the ALUFN
     case(alufn[5:4]) {
       2b00:
         out = mul_or_add;

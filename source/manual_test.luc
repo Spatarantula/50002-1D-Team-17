@@ -3,16 +3,16 @@
 *
 * @input clk                       - the default clock input
 * @input rst                       - the default reset input
-* @input io_shield_button          - the io buttons in au_top are connected to this input
-* @input io_shield_dip             - the io dips in au_top are connected to this input
+* @input io_shield_button          - the io_button[5] in au_top.luc are connected to this input
+* @input io_shield_dip             - the io_dip[3][8] in au_top.luc are connected to this input
 *
-* @output out                      - the middle row of LEDs is connected to the high 8 bits of out,
-*                                    the right row of LEDs is connected to the low 8 bits of out
+* @output out                      - the io_led[1] is connected to the high 8 bits of out,
+*                                    the io_led[0] is connected to the low 8 bits of out
 *
-* @output z                        - the first LED of the left row of LEDs is connected to z
-* @output v                        - the second LED of the left row of LEDs is connected to v
-* @output n                        - the third LED of the left row of LEDs is connected to n
-* @output e                        - the fourth LED of the left row of LEDs is connected to e
+* @output z                        - the io_led[2][7] is connected to z
+* @output v                        - the io_led[2][6] is connected to v
+* @output n                        - the io_led[2][5] is connected to n
+* @output e                        - the io_led[2][5] is connected to e
 * @output manual_state             - the last three LEDs of the left row of LEDs is connected to this.
 *                                    Indicates which state the manual test FSM is currently on.
 *                                    The last LED being lit indicates the LISTEN_A state
@@ -20,13 +20,14 @@
 *                                    The third last LED being lit indicates the LISTEN_ALUFN state
 *                                    All the last 3 LEDs are off in the CALC state
 */
+
 module manual_test (
     input clk,  // clock
     input rst,  // reset
     input io_shield_button [5],    // 5 buttons on IO Shield
     input io_shield_dip [3][8],    // DIP switches on IO Shield
     
-    //outputs from the alu, to be reflected on the IO element
+    // outputs from the alu, to be reflected on the IO element
     output out[16],
     output z[1],
     output v[1],
@@ -34,33 +35,36 @@ module manual_test (
     output e[1],
     output manual_state[4]
   ) {
-
+  
   .clk(clk) {
     .rst(rst) {
-      fsm state = {LISTEN_A, LISTEN_B, LISTEN_ALUFN, CALC};
-    dff aInput[16];
-    dff bInput[16];
-    dff alufnInput[6];
-    dff dip_in[16]; // the 16 bit input given by the DIP switches
+      fsm state = {LISTEN_A, LISTEN_B, LISTEN_ALUFN, CALC}; // State Machine to track the state of the manual tester
+      
+      dff aInput[16];          // Register to store the bit inputs for A
+      dff bInput[16];          // Register to store the bit inputs for B
+      dff alufnInput[6];       // Register to store the bit inputs for ALUFN
+      dff dip_in[16];          // Register to store the bit inputs given by the DIP switches
     }
   }
   
   alu aluTestInstance;
   
   always {
+    // initialise all values and connections
     manual_state = 4b0;
     aluTestInstance.a = aInput.q;
     aluTestInstance.b = bInput.q;
     aluTestInstance.alufn = alufnInput.q;
     
-    //inital values of the output, updated in state: CALC
+    // inital values of the output, updated in state: CALC
     out = 0;
     z = 0;
     v = 0;
     n = 0;
     e = 0;
+    
     case (state.q) {
-      state.LISTEN_A:
+      state.LISTEN_A:                                     // awaiting input for A
         manual_state[0] = 1b1;
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[0]) {                        // if the io_shield_button[0] (top button) is pressed, save the input from the DIP switches and move on to the next state
@@ -81,22 +85,23 @@ module manual_test (
           
       state.LISTEN_ALUFN:
         manual_state[2] = 1b1;
-        bInput.d = bInput.q;                // allow bInput to store data of input b
-        dip_in.d = io_shield_dip[0][5:0];   // using the 2 rightmost rows of DIP switches to input the values
-        if (io_shield_button[0]) {          // if the io_shield_button[0] (top button) is pressed, move on to the next state
+        bInput.d = bInput.q;                              // allow bInput to store data of input b
+        dip_in.d = io_shield_dip[0][5:0];                 // using the 2 rightmost rows of DIP switches to input the values
+        if (io_shield_button[0]) {                        // if the io_shield_button[0] (top button) is pressed, move on to the next state
           alufnInput.d = dip_in.q[5:0];
           state.d = state.CALC;
           }
         out = c{io_shield_dip[1], io_shield_dip[0]};
         
       state.CALC:
-        alufnInput.d = alufnInput.q; // allow alufnInput to store data of input alufn
+        alufnInput.d = alufnInput.q;                      // allow alufnInput to store data of input alufn
         
         // connect the nodes of the alu instance to the DFFs containing the data
         aluTestInstance.a = aInput.q;
         aluTestInstance.b = bInput.q;
         aluTestInstance.alufn = alufnInput.q;
         
+        // return outputs from the ALU based on captured inputs
         out = aluTestInstance.out;
         z = aluTestInstance.z;
         v = aluTestInstance.v;
@@ -104,8 +109,8 @@ module manual_test (
         e = aluTestInstance.e;
         
         if (io_shield_button[2]) {
-          manual_state = 4b0;       // if the io_shield_button[2] (top button) is pressed, move return to initial state
-          state.d = state.LISTEN_A; //avoid using the same button as previous state to prevent the fsm from "zooming" past state CALC
+          manual_state = 4b0;                             // if the io_shield_button[2] (top button) is pressed, move return to initial state
+          state.d = state.LISTEN_A;                       // avoid using the same button as previous state to prevent the fsm from "zooming" past state CALC
         }
     }
   }
