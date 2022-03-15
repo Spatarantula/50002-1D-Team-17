@@ -40,9 +40,9 @@ module rom_multiplier2 (
     b = TEST_B[test_case];
     alufn = ALUFN[test_case];
     exp_out = EXP_OUT[test_case];
-    exp_e = EXP_E[test_case];
     exp_z = EXP_ZVN[test_case][2];
     exp_v = EXP_ZVN[test_case][1];
     exp_n = EXP_ZVN[test_case][0];
+    exp_e = EXP_E[test_case];
   }
 }
