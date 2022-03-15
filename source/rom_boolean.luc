@@ -43,12 +43,12 @@ module rom_boolean (
   const TEST_B =  {16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, \ 16b1111000011110000, 16b1111000011110000, 16b1111000011110000, 16b1111000011110000};
 
   // all the ALUFN signals for each test case 
-  const ALUFN =   {AND,                 OR,                  XOR,                 A,                   \ NAND,                NOR,                 XNOR,                B};
+  const ALUFN =   {                AND,                  OR,                 XOR,                   A, \                NAND,                 NOR,                XNOR,                   B};
 
   // all the expected outputs for each test case
   const EXP_OUT = {16b1111000000000000, 16b1111111111110000, 16b0000111111110000, 16b1111111100000000, \ 16b0000111111111111, 16b0000000000001111, 16b1111000000001111, 16b1111000011110000};
   
-  const EXP_ZVN = {3b0,                 3b0,                 3b0,                 3b0,                 \ 3b0,                 3b0,                 3b0,                 3b0};
+  const EXP_ZVN = {                3b1,                 3b1,                 3b1,                 3b1, \                 3b0,                 3b0,                 3b0,                 3b1};
 
   always {
     num_cases = 5d8;
