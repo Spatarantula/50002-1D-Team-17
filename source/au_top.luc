@@ -61,6 +61,7 @@ module au_top (
         }
  
       state.MANUAL:
+        io_led[2][3:0] = manual.manual_state;
         io_led[0] = manual.out[7:0];
         io_led[1] = manual.out[15:8];
         io_led[2][7] = manual.z;
