@@ -1,3 +1,25 @@
+/**
+* Manual tester module to input a, b, and alufn values manually
+*
+* @input clk                       - the default clock input
+* @input rst                       - the default reset input
+* @input io_shield_button          - the io buttons in au_top are connected to this input
+* @input io_shield_dip             - the io dips in au_top are connected to this input
+*
+* @output out                      - the middle row of LEDs is connected to the high 8 bits of out,
+*                                    the right row of LEDs is connected to the low 8 bits of out
+*
+* @output z                        - the first LED of the left row of LEDs is connected to z
+* @output v                        - the second LED of the left row of LEDs is connected to v
+* @output n                        - the third LED of the left row of LEDs is connected to n
+* @output e                        - the fourth LED of the left row of LEDs is connected to e
+* @output manual_state             - the last three LEDs of the left row of LEDs is connected to this.
+*                                    Indicates which state the manual test FSM is currently on.
+*                                    The last LED being lit indicates the LISTEN_A state
+*                                    The second last LED being lit indicates the LISTEN_B state
+*                                    The third last LED being lit indicates the LISTEN_ALUFN state
+*                                    All the last 3 LEDs are off in the CALC state
+*/
 module manual_test (
     input clk,  // clock
     input rst,  // reset
