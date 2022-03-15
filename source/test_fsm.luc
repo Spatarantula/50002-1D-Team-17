@@ -211,6 +211,7 @@ module test_fsm (
             test_cases_passed_s.d = 0;
             unit_passed_s.d[unit] = &test_cases_passed_s.q[5:0];
           default:
+            test_cases_passed_s.d = 0;
             unit_passed_s.d = unit_passed_s.q;
         }
       }
