@@ -23,14 +23,14 @@ module multiplier (
     div_by_zero = 0;
     case(alufn[1:0]) {
       2b00:
-        out = a*b;
+        out = $signed(a)*$signed(b);
       2b01:
         if(b == 0) {
           div_by_zero = 1;
           out = 16b0;
         }
         else {
-          out = a/b;
+          out = $signed(a)/$signed(b);
         }
       2b10:
         if(b == 0) {
@@ -38,7 +38,7 @@ module multiplier (
           out = 16b0;
         }
         else {
-          out = a-(a/b)*b;
+          out = $signed(a)-($signed(a)/$signed(b))*$signed(b);
         }
       default:
         out = 16b0;
