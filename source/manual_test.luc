@@ -9,7 +9,8 @@ module manual_test (
     output z[1],
     output v[1],
     output n[1],
-    output e[1]
+    output e[1],
+    output manual_state[4]
   ) {
 
   .clk(clk) {
@@ -25,7 +26,7 @@ module manual_test (
   alu aluTestInstance;
   
   always {
-    
+    manual_state = 4b0;
     aluTestInstance.a = aInput.q;
     aluTestInstance.b = bInput.q;
     aluTestInstance.alufn = alufnInput.q;
@@ -38,6 +39,7 @@ module manual_test (
     e = 0;
     case (state.q) {
       state.LISTEN_A:
+      manual_state[0] = 1b1;
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[0]) {                       // if the io_shield_button[0] is pressed, save the input from the DIP switches and move on to the next state
           aInput.d = dip_in.q;
@@ -45,6 +47,7 @@ module manual_test (
         }
  
       state.LISTEN_B:
+      manual_state[1] = 1b1;
         aInput.d = aInput.q;                             // allow aInput to store data of input a
         dip_in.d = c{io_shield_dip[1], io_shield_dip[0]}; // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[2]) {                        // if the io_shield_button[2] is pressed, move on to the next state, avoid using the same button as previous state to prevent the fsm from "zooming" past state LISTEN_B
@@ -53,6 +56,7 @@ module manual_test (
         }
           
       state.LISTEN_ALUFN:
+      manual_state[2] = 1b1;
         bInput.d = bInput.q;               // allow bInput to store data of input b
         dip_in.d = io_shield_dip[0][5:0];  // using the 2 rightmost rows of DIP switches to input the values
         if (io_shield_button[0]) {          // if the io_shield_button[0] is pressed, move on to the next state
@@ -74,7 +78,8 @@ module manual_test (
         n = aluTestInstance.n;
         e = aluTestInstance.e;
         
-        if (io_shield_button[2]) {  // if the io_shield_button[0] is pressed, move return to initial state
+        if (io_shield_button[2]) {
+          manual_state = 4b0;  // if the io_shield_button[0] is pressed, move return to initial state
           state.d = state.LISTEN_A; //avoid using the same button as previous state to prevent the fsm from "zooming" past state CALC
         }
     }
