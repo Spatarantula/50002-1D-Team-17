@@ -72,7 +72,7 @@ module alu (
         mul_or_add = adderALU.out;
       1b1:
         mul_or_add = multiplierALU.out;
-        e = e | multiplierALU.div_by_zero;
+        e = multiplierALU.div_by_zero;
       default:
         mul_or_add = 16h0;
     }
