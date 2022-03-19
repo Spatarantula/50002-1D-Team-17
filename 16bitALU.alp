@@ -3,26 +3,15 @@
   <files>
     <component>wave.luc</component>
     <src>alu.luc</src>
-    <src>seven_seg.luc</src>
-    <src>multi_seven_seg.luc</src>
     <component>counter.luc</component>
-    <src>rom_multiplier1.luc</src>
     <component>decoder.luc</component>
     <src>multiplier.luc</src>
-    <src>rom_adder1.luc</src>
-    <src>manual_test.luc</src>
     <src>adder.luc</src>
     <src>shifter.luc</src>
-    <src>rom_adder2.luc</src>
-    <src>rom_shifter.luc</src>
     <component>reset_conditioner.luc</component>
     <src>compare.luc</src>
-    <src>rom_boolean.luc</src>
-    <src>rom_comparator.luc</src>
     <src>boolean.luc</src>
     <src top="true">au_top.luc</src>
-    <src>test_fsm.luc</src>
-    <src>rom_multiplier2.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>
