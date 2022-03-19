@@ -1,0 +1,52 @@
+/**
+* Performs multiplication on two 16 bit values
+*
+* @input a            - 16 bit input from reg A
+* @input b            - 16 bit input from reg B
+* @input alufn        -  6 bit alufn control signal
+*   xx xx00: a*b,
+*   xx xx01: a/b,
+*   xx xx10: a%b,
+*
+* @output out         - 16 bit result of the mulitplication
+* @output div_by_zero - error signal indicated that divisor is 0
+*/
+
+module multiplier (
+    input a[16],
+    input b[16],
+    input alufn[6],
+    
+    output out[16],
+    output div_by_zero
+  ) {
+
+  always {
+    // initialise the error signal to 0
+    div_by_zero = 0;
+    
+    // signed operation is used as the FPGA treats inputs as unsigned, resulting in errors when performing tests. 
+    case(alufn[1:0]) {                
+      2b00:                            // multiplication
+        out = $signed(a)*$signed(b);   
+      2b01:                           
+        if(b == 0) {                   // checks whether the divisor (input b) is 0
+          div_by_zero = 1;
+          out = 16b0;
+        }
+        else {                         // division
+          out = $signed(a)/$signed(b); 
+        }
+      2b10:
+        if(b == 0) {                   // checks whether the divisor (input b) is 0
+          div_by_zero = 1;
+          out = 16b0;
+        }
+        else {                         // modulus
+          out = $signed(a)-($signed(a)/$signed(b))*$signed(b);
+        }
+      default:
+        out = 16b0;
+    }
+  }
+}

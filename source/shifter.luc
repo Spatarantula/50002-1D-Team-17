@@ -1,0 +1,33 @@
+/**
+* Performs bitshift operations on two 16 bit values.
+*
+* @input a     - 16 bit input from reg A
+* @input b     - 16 bit input from reg B
+* @input alufn -  6 bit control signal
+*   xx xx00: a  << b,  (unsigned left shift)
+*   xx xx01: a  >> b,  (unsigned right shift)
+*   xx xx11: a >>> b,  (signed/arithmetic right shift)
+*
+* @output out  - 16 bit result of the bitshift operation performed
+*/
+
+module shifter (
+    input a[16],
+    input b[16],
+    input alufn[6],
+    output out[16]
+  ) {
+  
+  always {
+    case(alufn[1:0]) {
+      2b00:
+        out = a << b[3:0];           // unsigned left shift
+      2b01:
+        out = a >> b[3:0];           // unsigned right shift
+      2b11:
+        out = $signed(a) >>> b[3:0]; // signed/arithmetic right shift
+      default:
+        out = 16b0;
+    }
+  }
+}

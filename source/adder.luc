@@ -1,0 +1,40 @@
+/**
+* Performs addition/subtraction on two 16 bit values, following the lab 3 schematic
+*
+* @input a     - 16 bit input from reg A
+* @input b     - 16 bit input from reg B
+* @input alufn -  6 bit control signal
+*   xx xxx0: a+b,
+*   xx xxx1: a-b,
+*
+* @output out  - 16 bit result of the operation performed
+* @output z    -  1 bit, set to true if the result (sum) is 0
+* @output v    -  1 bit, set to true if there is an overflow
+* @output n    -  1 bit, set to true if the result (sum) is negative
+*/
+
+module adder (
+    input a[16],
+    input b[16],
+    input alufn[6],
+    output out[16],
+    output z,
+    output v,
+    output n
+  ) {
+
+  sig sum[16];
+  sig xb[16];
+  
+  always {
+    xb = 16x{alufn[0]} ^ b;                                            // 1's complement using XOR gate
+
+    sum = a+xb+alufn[0];                                               // ALUFN[0] as  carry in.
+    
+    n = sum[15];                                                       // N = S_15
+    v = (a[15] & xb[15] & !sum[15]) | (!a[15] & !xb[15] & sum[15]);    // V = A.xB.!S_15 + !A.!xB.S_15
+    z = ~|sum;                                                         // Z = NOR(S_15, S_14, ..., S_0);
+
+    out = sum;
+  }
+}

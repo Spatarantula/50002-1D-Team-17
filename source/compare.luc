@@ -1,0 +1,38 @@
+/**
+* Uses the outputs from the adder module after performing a-b on two 16 bit values
+* to determine the results of the different compare operations following the lab 3 schematic
+*
+* @input z     -  1 bit, the z output from the adder module
+* @input v     -  1 bit, the v output from the adder module
+* @input n     -  1 bit, the n output from the adder module
+* @input alufn -  6 bit control signal
+*   xx x01x: a == b,
+*   xx x10x: a <  b,
+*   xx x11x: a <= b,
+*
+* @output out  -  the high 15 bits of the output are always 0. The LSB indicates the result
+*                 of the comparison operation
+*/
+
+module compare (
+    input z,
+    input v,
+    input n,
+    input alufn[6],
+    output out[16]
+  ) {
+
+  always {
+    out[15:1] = 15b0; // The first 15 bits of the output are always tied to ground
+    
+    case (alufn[2:1]) {
+      b01:            // Check CMPEQ - a == b
+        out[0] = z;
+      b10:            // Check CMPLT - a <  b
+        out[0] = n ^ v;
+      b11:            // Check CMPLE - a <= b
+        out[0] = z | (n ^ v);
+      default:
+        out = b0;
+  }
+}
