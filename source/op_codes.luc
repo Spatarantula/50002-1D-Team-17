@@ -1,0 +1,43 @@
+module op_codes (
+    output add[6],
+    output sub[6],
+    output mul[6],
+    output div[6],
+    output mod[6],
+    output and[6],
+    output or[6],
+    output xor[6],
+    output t_a[6],
+    output nand[6],
+    output nor[6],
+    output xnor[6],
+    output t_b[6],
+    output shl[6],
+    output shr[6],
+    output sra[6],
+    output eq[6],
+    output lt[6],
+    output ltq[6]
+  ) {
+    always {
+      add  = c{0,0,0,0,0,0};
+      sub  = c{0,0,0,0,0,1};
+      mul  = c{0,0,0,1,0,0};
+      div  = c{0,0,0,1,0,1};
+      mod  = c{0,0,0,1,1,0};
+      and  = c{0,1,1,0,0,0};
+      or   = c{0,1,1,1,1,0};
+      xor  = c{0,1,0,1,1,0};
+      t_a  = c{0,1,1,0,1,0};
+      nand = c{0,1,0,1,1,1};
+      nor  = c{0,1,0,0,0,1};
+      xnor = c{0,1,1,0,0,1};
+      t_b  = c{0,1,1,1,0,0};
+      shl  = c{1,0,0,0,0,0};
+      shr  = c{1,0,0,0,0,1};
+      sra  = c{1,0,0,0,1,1};
+      eq   = c{1,1,0,0,1,1};
+      lt   = c{1,1,0,1,0,1};
+      ltq  = c{1,1,0,1,1,1};
+    }
+  }
