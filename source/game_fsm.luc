@@ -42,46 +42,52 @@ module game_fsm (
       fsm game_state = {
         START,
         
-        SELECT_SQUARE_P1,
-        SELECT_SIZE_P1,
+        SELECT_SQUARE_P1,                       // the state where the player selects the box to put their piece on
+        SELECT_SIZE_P1,                         // the state where the player selects the size of the piece after selecting the square. Move to next state
+        VALIDATE_SIZE_P1,                       // this state checks if the remaining number of pieces for the size selected in the previous is > 0. If not, go back to prev state
 
-        VALIDATE_PLACEMENT_P1,
-        COMPLETE_ROW_0_CHECK_BOX_00_P1,
-        COMPLETE_ROW_0_CHECK_BOX_01_P1,
-        COMPLETE_ROW_0_CHECK_BOX_02_P1,
+        VALIDATE_PLACEMENT_P1,                  // this state performs the abs(board_state[y][x]) < abs(piece_size) comparison to determine if the piece being placed can actually be placed. If not, go back to select square state
 
-        COMPLETE_ROW_1_CHECK_BOX_10_P1,
+        COMPLETE_ROW_0_CHECK_BOX_00_P1,         // check if box 0,0 has a piece owned by p1, if it does move to the next state. else move 3 states forward
+        COMPLETE_ROW_0_CHECK_BOX_01_P1,         // check if box 0,1 has a piece owned by p1, if it does move to the next state. else move 2 states forward
+        COMPLETE_ROW_0_CHECK_BOX_02_P1,         // check if box 0,2 has a piece owned by p1, if it does, move to the declare p1 winner state. else move 1 state forward
+
+        COMPLETE_ROW_1_CHECK_BOX_10_P1,         // same idea as above ^
         COMPLETE_ROW_1_CHECK_BOX_11_P1,
         COMPLETE_ROW_1_CHECK_BOX_12_P1,
 
-        COMPLETE_ROW_2_CHECK_BOX_20_P1,
+        COMPLETE_ROW_2_CHECK_BOX_20_P1,         // same idea as above ^
         COMPLETE_ROW_2_CHECK_BOX_21_P1,
         COMPLETE_ROW_2_CHECK_BOX_22_P1,
 
-        COMPLETE_COL_0_CHECK_BOX_00_P1,
+        COMPLETE_COL_0_CHECK_BOX_00_P1,         // same idea as above ^
         COMPLETE_COL_0_CHECK_BOX_10_P1,
         COMPLETE_COL_0_CHECK_BOX_20_P1,
 
-        COMPLETE_COL_1_CHECK_BOX_01_P1,
+        COMPLETE_COL_1_CHECK_BOX_01_P1,         // same idea as above ^
         COMPLETE_COL_1_CHECK_BOX_11_P1,
         COMPLETE_COL_1_CHECK_BOX_21_P1,
 
-        COMPLETE_COL_2_CHECK_BOX_02_P1,
+        COMPLETE_COL_2_CHECK_BOX_02_P1,         // same idea as above ^
         COMPLETE_COL_2_CHECK_BOX_12_P1,
         COMPLETE_COL_2_CHECK_BOX_22_P1,
 
-        COMPLETE_DIA_0_CHECK_BOX_00_P1,
+        COMPLETE_DIA_0_CHECK_BOX_00_P1,         // same idea as above ^
         COMPLETE_DIA_0_CHECK_BOX_11_P1,
         COMPLETE_DIA_0_CHECK_BOX_22_P1,
 
-        COMPLETE_DIA_1_CHECK_BOX_20_P1,
+        COMPLETE_DIA_1_CHECK_BOX_20_P1,         // same idea as above ^
         COMPLETE_DIA_1_CHECK_BOX_11_P1,
         COMPLETE_DIA_1_CHECK_BOX_02_P1,
 
+        DECLARE_WINNER_P1,                      // set winner as p1, go to end state
+        
         SELECT_SQUARE_P2,
         SELECT_SIZE_P2,
         
+        VALIDATE_SIZE_P2,
         VALIDATE_PLACEMENT_P2,
+
         COMPLETE_ROW_0_CHECK_BOX_00_P2,
         COMPLETE_ROW_0_CHECK_BOX_01_P2,
         COMPLETE_ROW_0_CHECK_BOX_02_P2,
@@ -114,7 +120,9 @@ module game_fsm (
         COMPLETE_DIA_1_CHECK_BOX_11_P2,
         COMPLETE_DIA_1_CHECK_BOX_02_P2,
         
-        DECLARE_WINNER
+        DECLARE_WINNER_P2,
+
+        END                                     // display a crown and `P1` or `P2` for who-ever won. Press any key to go to START state
       };
 
       dff counter[31](#INIT(0));             // the high 5 bits of this are used as a counter for test cases
@@ -148,7 +156,6 @@ module game_fsm (
         
     }
     game_state.SELECT_SQUARE_P1:
-      sel_sq_state_p1 = 1;
       if(button_1) {
         
       }

@@ -4,6 +4,11 @@ module display (
     
     input x[4],
     input y[4],
+
+    input game_fsm_state[6],
+    input board_state[3][3][16],
+    input pieces_remaining_p1[16],
+    input pieces_remaining_p2[16],
     
     output r[8],
     output g[8],

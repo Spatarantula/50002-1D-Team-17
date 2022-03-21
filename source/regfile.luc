@@ -13,6 +13,8 @@ module regfile (
     output ra_data[16],
     
     output board_state[3][3][16],
+    output pieces_remaining_p1[16],
+    output pieces_remaining_p2[16],
   ) {
 
   always {
