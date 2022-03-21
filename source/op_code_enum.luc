@@ -1,4 +1,4 @@
-module op_codes (
+module op_code_enum (
     output add[6],
     output sub[6],
     output mul[6],

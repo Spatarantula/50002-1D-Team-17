@@ -27,16 +27,16 @@ module game_fsm (
     output rb[4],
     output rc[4],
 
-    output asel[2],
-    output bsel[2],
-    output wdsel[2],
+    output asel,
+    output bsel,
+    output wdsel,
     output alufn[6],
     output start,
     output finished,
 
     output state[4]
   ) {
-  
+  op_codes
   .clk(clk) {
     .rst(rst) {
       fsm game_state = {

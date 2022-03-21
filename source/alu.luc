@@ -44,16 +44,24 @@ module alu (
     input a[16],
     input b[16],
     input alufn[6],
+    
+    input asel,
+    input bsel,
+    input wdsel,
+
     output out[16],
     output z,
     output v,
     output n,
     output e
   ) {
-  
+
+  sig inp_b[16];
+  sig inp_a[16];
+
   // instantiate all the components
   .alufn(alufn) {
-    .b(b), .a(a) {
+    .a(inp_a), .b(inp_b) {
       adder adderALU; 
       boolean booleanALU;
       shifter shifterALU;
@@ -66,6 +74,14 @@ module alu (
   sig mul_or_add[16];
   
   always {
+    inp_a = a;
+    inp_b = b;
+
+    if(asel)
+      inp_a = 0;
+    if(bsel)
+      inp_b = 0;
+
     e = 0;
     z = adderALU.z;
     v = adderALU.v;
@@ -99,5 +115,8 @@ module alu (
       default:
         out = 16b0;
     }
+
+    if(wdsel)
+      out = 0;
   }
 }

@@ -1,0 +1,45 @@
+module regfile_address_enum (
+    output box00[4],
+    output box01[4],
+    output box02[4],
+    output box10[4],
+    output box11[4],
+    output box12[4],
+    output box20[4],
+    output box21[4],
+    output box22[4],
+
+    output pieces_remaining_p1[4],
+    output pieces_remaining_p2[4],
+
+    output placement_p1[4],
+    output placement_p2[4],
+    
+    output winner[4],
+
+    output temp1[4],
+    output temp2[4]
+  ) {
+    always {
+      box00 = 4h0;
+      box01 = 4h1;
+      box02 = 4h2;
+      box10 = 4h3;
+      box11 = 4h4;
+      box12 = 4h5;
+      box20 = 4h6;
+      box21 = 4h7;
+      box22 = 4h8;
+
+      pieces_remaining_p1 = 4h9;
+      pieces_remaining_p2 = 4hA;
+
+      placement_p1 = 4hB;
+      placement_p2 = 4hC;
+    
+      winner = 4hD;
+
+      temp1 = 4hE;
+      temp2 = 4hF;
+    }
+  }
