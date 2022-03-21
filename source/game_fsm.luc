@@ -1,0 +1,156 @@
+module game_fsm (
+    input clk,
+    input rst,
+    
+    input button_0,
+    input button_1,
+    input button_2,
+    input button_3,
+    input button_4,
+    input button_5,
+    input button_6,
+    input button_7,
+    input button_8,
+    input button_9,
+
+    input button_a,
+    input button_b,
+    input button_c,
+    input button_d,
+
+    input button_asterisk,
+    input button_hash,
+
+    output we,
+    
+    output ra[4],
+    output rb[4],
+    output rc[4],
+
+    output asel[2],
+    output bsel[2],
+    output wdsel[2],
+    output alufn[6],
+    output start,
+    output finished,
+
+    output state[4]
+  ) {
+  
+  .clk(clk) {
+    .rst(rst) {
+      fsm game_state = {
+        START,
+        
+        SELECT_SQUARE_P1,
+        SELECT_SIZE_P1,
+
+        VALIDATE_PLACEMENT_P1,
+        COMPLETE_ROW_0_CHECK_BOX_00_P1,
+        COMPLETE_ROW_0_CHECK_BOX_01_P1,
+        COMPLETE_ROW_0_CHECK_BOX_02_P1,
+
+        COMPLETE_ROW_1_CHECK_BOX_10_P1,
+        COMPLETE_ROW_1_CHECK_BOX_11_P1,
+        COMPLETE_ROW_1_CHECK_BOX_12_P1,
+
+        COMPLETE_ROW_2_CHECK_BOX_20_P1,
+        COMPLETE_ROW_2_CHECK_BOX_21_P1,
+        COMPLETE_ROW_2_CHECK_BOX_22_P1,
+
+        COMPLETE_COL_0_CHECK_BOX_00_P1,
+        COMPLETE_COL_0_CHECK_BOX_10_P1,
+        COMPLETE_COL_0_CHECK_BOX_20_P1,
+
+        COMPLETE_COL_1_CHECK_BOX_01_P1,
+        COMPLETE_COL_1_CHECK_BOX_11_P1,
+        COMPLETE_COL_1_CHECK_BOX_21_P1,
+
+        COMPLETE_COL_2_CHECK_BOX_02_P1,
+        COMPLETE_COL_2_CHECK_BOX_12_P1,
+        COMPLETE_COL_2_CHECK_BOX_22_P1,
+
+        COMPLETE_DIA_0_CHECK_BOX_00_P1,
+        COMPLETE_DIA_0_CHECK_BOX_11_P1,
+        COMPLETE_DIA_0_CHECK_BOX_22_P1,
+
+        COMPLETE_DIA_1_CHECK_BOX_20_P1,
+        COMPLETE_DIA_1_CHECK_BOX_11_P1,
+        COMPLETE_DIA_1_CHECK_BOX_02_P1,
+
+        SELECT_SQUARE_P2,
+        SELECT_SIZE_P2,
+        
+        VALIDATE_PLACEMENT_P2,
+        COMPLETE_ROW_0_CHECK_BOX_00_P2,
+        COMPLETE_ROW_0_CHECK_BOX_01_P2,
+        COMPLETE_ROW_0_CHECK_BOX_02_P2,
+
+        COMPLETE_ROW_1_CHECK_BOX_10_P2,
+        COMPLETE_ROW_1_CHECK_BOX_11_P2,
+        COMPLETE_ROW_1_CHECK_BOX_12_P2,
+
+        COMPLETE_ROW_2_CHECK_BOX_20_P2,
+        COMPLETE_ROW_2_CHECK_BOX_21_P2,
+        COMPLETE_ROW_2_CHECK_BOX_22_P2,
+
+        COMPLETE_COL_0_CHECK_BOX_00_P2,
+        COMPLETE_COL_0_CHECK_BOX_10_P2,
+        COMPLETE_COL_0_CHECK_BOX_20_P2,
+
+        COMPLETE_COL_1_CHECK_BOX_01_P2,
+        COMPLETE_COL_1_CHECK_BOX_11_P2,
+        COMPLETE_COL_1_CHECK_BOX_21_P2,
+
+        COMPLETE_COL_2_CHECK_BOX_02_P2,
+        COMPLETE_COL_2_CHECK_BOX_12_P2,
+        COMPLETE_COL_2_CHECK_BOX_22_P2,
+
+        COMPLETE_DIA_0_CHECK_BOX_00_P2,
+        COMPLETE_DIA_0_CHECK_BOX_11_P2,
+        COMPLETE_DIA_0_CHECK_BOX_22_P2,
+
+        COMPLETE_DIA_1_CHECK_BOX_20_P2,
+        COMPLETE_DIA_1_CHECK_BOX_11_P2,
+        COMPLETE_DIA_1_CHECK_BOX_02_P2,
+        
+        DECLARE_WINNER
+      };
+
+      dff counter[31](#INIT(0));             // the high 5 bits of this are used as a counter for test cases
+      dff unit_passed_s[7](#INIT(0));        // store the values determining whether the test_units have passed
+      dff test_cases_passed_s[16](#INIT(0)); // store the values determining which test cases of the respective test_units have passed
+    }
+  }
+  
+  always {
+    we = 0;
+    
+    ra = 0;
+    rb = 0;
+    rc = 0;
+
+    asel = 0;
+    bsel = 0;
+    wdsel = 0;
+    alufn = 0;
+    start = 0;
+    finished = 0;
+
+    state = 0;
+    case(game_state.q) {
+      game_state.START:
+        start = 1;
+        // press any of these buttons to start the game
+        if(|c{button_0, button_asterisk, button_hash}) {
+          game_state.d = game_state.SELECT_SQUARE_P1;
+        }
+        
+    }
+    game_state.SELECT_SQUARE_P1:
+      sel_sq_state_p1 = 1;
+      if(button_1) {
+        
+      }
+  }
+}

@@ -1,0 +1,16 @@
+module display (
+    input clk,  // clock
+    input rst,  // reset
+    
+    input x[4],
+    input y[4],
+    
+    output r[8],
+    output g[8],
+    output b[8],
+  ) {
+
+  always {
+  
+  }
+}

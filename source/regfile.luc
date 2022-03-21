@@ -1,0 +1,21 @@
+module regfile (
+    input clk,
+    input rst,
+    
+    input ra[4],
+    input rb[4],
+    input rc[4],
+    
+    input we,
+    input data[16],
+    
+    output ra_data[16],
+    output ra_data[16],
+    
+    output board_state[3][3][16],
+  ) {
+
+  always {
+
+  }
+}

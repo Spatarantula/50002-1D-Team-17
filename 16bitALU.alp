@@ -3,16 +3,19 @@
   <files>
     <src>multiplier.luc</src>
     <src>shifter.luc</src>
-    <src>boolean.luc</src>
     <src>op_codes.luc</src>
-    <src top="true">au_top.luc</src>
     <component>wave.luc</component>
-    <src>alu.luc</src>
     <component>counter.luc</component>
-    <component>reset_conditioner.luc</component>
+    <src>game_fsm.luc</src>
     <component>decoder.luc</component>
+    <src>boolean.luc</src>
+    <src top="true">au_top.luc</src>
+    <src>alu.luc</src>
+    <src>regfile.luc</src>
+    <component>reset_conditioner.luc</component>
     <src>adder.luc</src>
     <src>compare.luc</src>
+    <src>display.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>
