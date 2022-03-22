@@ -1,19 +1,19 @@
 import graphviz
 
 
-def listify(a) -> list:
-    if a is None:
-        return a
+def listify(param) -> list:
+    if param is None:
+        return param
 
-    if not isinstance(a, list):
-        return [a]
-    return a
+    if not isinstance(param, list):
+        return [param]
+    return param
 
 
-def extend_len(a: list[str], length: int) -> list:
-    if len(a) == 1:
-        return [a[0] for _ in range(length)]
-    return a
+def extend_len(param: list[str], length: int) -> list:
+    if len(param) == 1:
+        return [param[0] for _ in range(length)]
+    return param
 
 
 class StateOutput:
@@ -32,6 +32,7 @@ class StateOutput:
         "finished",
         "state",
     }
+
     def __init__(
         self,
         we: str | list[str] = None,
@@ -124,7 +125,7 @@ class StateOutput:
 
 
 class TransitionRule:
-    def  __init__(self, cond: str | list[str], true_state: str | list[str], false_state: str = None, label: str = None, inv_label: str = None):
+    def __init__(self, cond: str | list[str], true_state: str | list[str], false_state: str = None, label: str = None, inv_label: str = None):
         cond = listify(cond)
         self.condition = cond
         self.label = " | ".join(cond) if label is None else label
@@ -169,16 +170,16 @@ class StateMachine:
         for state, (rule, out) in self.transition.items(): # type: str, (TransitionRule, StateOutput)
             lucid_code.append(f"game_state.{state}:")
 
-            out_ls = {a: getattr(out, a) for a in StateOutput.outputs if getattr(out, a) is not None}
+            out_ls = {attr: getattr(out, attr) for attr in StateOutput.outputs if getattr(out, attr) is not None}
 
             out_lists = list(filter(lambda x: len(x[1]) > 1, out_ls.items()))
 
             length = 1
             if len(out_lists) > 0:
                 length = len(out_lists[0][1])
-                for a, ls in out_lists:
+                for attr, ls in out_lists:
                     if len(ls) != length:
-                        raise IndexError(f"attribute {a} not eq length")
+                        raise IndexError(f"attribute {attr} not eq length")
 
             if len(rule.condition) > 1 and len(rule.condition) != length:
                 raise IndexError(f"Transition Rule {rule.condition[0]} not eq length")
@@ -234,12 +235,109 @@ A = StateMachine()
 A.add_state(
     'START',
     StateOutput(start = "1"),
-    TransitionRule("|c{button_0, button_asterisk, button_hash}", "SELECT_BOX_P1", label = " 0, * or # pressed")
+    TransitionRule("|c{button_0, button_asterisk, button_hash}", "MAKE_BOX_00_MIN_P1", label = " 0, * or # pressed")
 )
 
 size = [-1, "small", "med", "large"]
-size_p1 = [-1, "1", "5", "9"]
-size_p2 = [-1, "2", "6", "10"]
+size_p1 = [-1, "2", "8", "14"]
+size_p2 = [-1, "4", "10", "16"]
+
+
+for j in range(3):
+    for i in range(3):
+        if i == j == 0:
+            A.add_state(
+                'MAKE_BOX_00_MIN_P1',
+                StateOutput(
+                    ra = "regfile_addr.box00",
+                    rc = "regfile_addr.temp1",
+                    alufn = "alu_op_code.t_a",
+                    we = "1",
+                ),
+                TransitionRule("always", "CHECK_BOX_01_MIN_P1")
+            )
+        else:
+            A.add_state(
+                f'CHECK_BOX_{j}{i}_MIN_P1',
+                StateOutput(
+                    ra = f"regfile_addr.box{j}{i}",
+                    rb = "regfile_addr.temp1",
+                    rc = "regfile_addr.temp2",
+                    alufn = "alu_op_code.lt",
+                    we = "1",
+                ),
+                TransitionRule("always", f"MAKE_BOX_{j}{i}_MIN_P1")
+            )
+            if i < 2:
+                next_state = f"CHECK_BOX_{j}{i + 1}_MIN_P1"
+            elif j < 2:
+                next_state = f"CHECK_BOX_{j+1}0_MIN_P1"
+            else:
+                next_state = f"CHECK_SMALL_PIECES_P1_PT1"
+
+            A.add_state(
+                f'MAKE_BOX_{j}{i}_MIN_P1',
+                StateOutput(
+                    ra = f"regfile_addr.box{j}{i}",
+                    rb = "regfile_addr.temp2",
+                    rc = "regfile_addr.temp1",
+                    alufn = "alu_op_code.t_a",
+                    we = "rb_data[0]",
+                ),
+                TransitionRule("always", next_state)
+            )
+
+for i, s in enumerate(size[1:], 1):
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P1_PT1',
+        StateOutput(
+            asel = "1",
+            rb = f"regfile_addr.pieces_remaining_{s}_p1",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.lt",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P1_PT2")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P1_PT2',
+        StateOutput(
+            rb = "regfile_addr.temp2",
+        ),
+        TransitionRule("rb_data == 0", false_state = f"CHECK_{s.upper()}_PIECES_P1_PT3", true_state = f"CHECK_{size[i+1].upper()}_PIECES_P1_PT1" if i < 3 else "DECLARE_DRAW")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P1_PT3',
+        StateOutput(
+            ra = f"regfile_addr.temp1",
+            literal = f"{size_p1[i]}",
+            bsel = "1",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.sub",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P1_PT4")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P1_PT4',
+        StateOutput(
+            ra = f"regfile_addr.temp2",
+            literal = f"-2",
+            bsel = "1",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.lt",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P1_PT5")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P1_PT5',
+        StateOutput(
+            rb = f"regfile_addr.temp2",
+        ),
+        TransitionRule("rb_data == 0", false_state = "SELECT_BOX_P1", true_state = f"CHECK_{size[i+1].upper()}_PIECES_P1_PT1" if i < 3 else "DECLARE_DRAW")
+    )
+
 
 A.add_state(
     'SELECT_BOX_P1',
@@ -346,13 +444,13 @@ for j in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P1")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_ROW_{j + 1}_CHECK_BOX_{j + 1}0_P1",
                     false_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P1"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_ROW_{j + 1}_CHECK_BOX_{j + 1}0_P1",
                     false_state = f"HAS_P1_WON"
                 )
@@ -361,13 +459,13 @@ for j in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P1")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_COL_0_CHECK_BOX_00_P1",
                     false_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P1"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_COL_0_CHECK_BOX_00_P1",
                     false_state = f"HAS_P1_WON"
                 )
@@ -377,7 +475,7 @@ for j in range(3):
                 ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
-                literal = "2",
+                literal = "3",
                 bsel = "1",
                 alufn = "alu_op_code.mod",
                 we = "1"
@@ -392,13 +490,13 @@ for i in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P1")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_COL_{j + 1}_CHECK_BOX_{j + 1}0_P1",
                     false_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P1"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_COL_{j + 1}_CHECK_BOX_{j + 1}0_P1",
                     false_state = f"HAS_P1_WON"
                 )
@@ -407,13 +505,13 @@ for i in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P1")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_DIA_0_CHECK_BOX_00_P1",
                     false_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P1"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 0",
+                    "rb_data[1] == 1",
                     true_state = f"COMPLETE_DIA_0_CHECK_BOX_00_P1",
                     false_state = f"HAS_P1_WON"
                 )
@@ -423,7 +521,7 @@ for i in range(3):
                 ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
-                literal = "2",
+                literal = "3",
                 bsel = "1",
                 alufn = "alu_op_code.mod",
                 we = "1"
@@ -436,13 +534,13 @@ for i in range(3):
         tr = TransitionRule("always", true_state = f"COMPLETE_DIA_0_CHECK_BOX_{i+1}{i+1}_P1")
     elif i == 1:
         tr = TransitionRule(
-            "rb_data == 0",
+            "rb_data[1] == 1",
             true_state = f"COMPLETE_DIA_1_CHECK_BOX_20_P1",
             false_state = f"COMPLETE_DIA_0_CHECK_BOX_{i+1}{i+1}_P1"
         )
     else:
         tr = TransitionRule(
-            "rb_data == 0",
+            "rb_data[1] == 1",
             true_state = f"COMPLETE_DIA_1_CHECK_BOX_20_P1",
             false_state = f"HAS_P1_WON"
         )
@@ -452,7 +550,7 @@ for i in range(3):
             ra = f"regfile_addr.box{i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
-            literal = "2",
+            literal = "3",
             bsel = "1",
             alufn = "alu_op_code.mod",
             we = "1"
@@ -465,13 +563,13 @@ for i in range(3):
         tr = TransitionRule("always", true_state = f"COMPLETE_DIA_1_CHECK_BOX_{2-(i+1)}{i+1}_P1")
     elif i == 1:
         tr = TransitionRule(
-            "rb_data == 0",
+            "rb_data[1] == 1",
             true_state = f"SELECT_BOX_P2",
             false_state = f"COMPLETE_DIA_1_CHECK_BOX_{2-(i+1)}{i+1}_P1"
         )
     else:
         tr = TransitionRule(
-            "rb_data == 0",
+            "rb_data[1] == 1",
             true_state = f"SELECT_BOX_P2",
             false_state = f"HAS_P1_WON"
         )
@@ -481,7 +579,7 @@ for i in range(3):
             ra = f"regfile_addr.box{2-i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
-            literal = "2",
+            literal = "3",
             bsel = "1",
             alufn = "alu_op_code.mod",
             we = "1"
@@ -496,12 +594,107 @@ A.add_state(
     ),
     TransitionRule(
         "rb_data == 0",
-        true_state = f"SELECT_BOX_P2",
+        true_state = f"MAKE_BOX_00_MIN_P2",
         false_state = f"DECLARE_P1_WINNER"
     ),
 )
 
 # BREAK POINT
+
+for j in range(3):
+    for i in range(3):
+        if i == j == 0:
+            A.add_state(
+                'MAKE_BOX_00_MIN_P2',
+                StateOutput(
+                    ra = "regfile_addr.box00",
+                    rc = "regfile_addr.temp1",
+                    alufn = "alu_op_code.t_a",
+                    we = "1",
+                ),
+                TransitionRule("always", "CHECK_BOX_01_MIN_P2")
+            )
+        else:
+            A.add_state(
+                f'CHECK_BOX_{j}{i}_MIN_P2',
+                StateOutput(
+                    ra = f"regfile_addr.box{j}{i}",
+                    rb = "regfile_addr.temp1",
+                    rc = "regfile_addr.temp2",
+                    alufn = "alu_op_code.lt",
+                    we = "1",
+                ),
+                TransitionRule("always", f"MAKE_BOX_{j}{i}_MIN_P2")
+            )
+            if i < 2:
+                next_state = f"CHECK_BOX_{j}{i + 1}_MIN_P2"
+            elif j < 2:
+                next_state = f"CHECK_BOX_{j+1}0_MIN_P2"
+            else:
+                next_state = f"CHECK_SMALL_PIECES_P2_PT1"
+
+            A.add_state(
+                f'MAKE_BOX_{j}{i}_MIN_P2',
+                StateOutput(
+                    ra = f"regfile_addr.box{j}{i}",
+                    rb = "regfile_addr.temp2",
+                    rc = "regfile_addr.temp1",
+                    alufn = "alu_op_code.t_a",
+                    we = "rb_data[0]",
+                ),
+                TransitionRule("always", next_state)
+            )
+
+for i, s in enumerate(size[1:], 1):
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P2_PT1',
+        StateOutput(
+            asel = "1",
+            rb = f"regfile_addr.pieces_remaining_{s}_p2",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.lt",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P2_PT2")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P2_PT2',
+        StateOutput(
+            rb = "regfile_addr.temp2",
+        ),
+        TransitionRule("rb_data == 0", false_state = f"CHECK_{s.upper()}_PIECES_P2_PT3", true_state = f"CHECK_{size[i+1].upper()}_PIECES_P2_PT1" if i < 3 else "DECLARE_DRAW")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P2_PT3',
+        StateOutput(
+            ra = f"regfile_addr.temp1",
+            literal = f"{size_p2[i]}",
+            bsel = "1",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.sub",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P2_PT4")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P2_PT4',
+        StateOutput(
+            ra = f"regfile_addr.temp2",
+            literal = f"-2",
+            bsel = "1",
+            rc = "regfile_addr.temp2",
+            alufn = "alu_op_code.lt",
+            we = "1",
+        ),
+        TransitionRule("always", f"CHECK_{s.upper()}_PIECES_P2_PT5")
+    )
+    A.add_state(
+        f'CHECK_{s.upper()}_PIECES_P2_PT5',
+        StateOutput(
+            rb = f"regfile_addr.temp2",
+        ),
+        TransitionRule("rb_data == 0", false_state = "SELECT_BOX_P2", true_state = f"CHECK_{size[i+1].upper()}_PIECES_P2_PT1" if i < 3 else "DECLARE_DRAW")
+    )
 
 A.add_state(
     'SELECT_BOX_P2',
@@ -608,13 +801,13 @@ for j in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P2")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_ROW_{j + 1}_CHECK_BOX_{j + 1}0_P2",
                     false_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P2"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_ROW_{j + 1}_CHECK_BOX_{j + 1}0_P2",
                     false_state = f"HAS_P2_WON"
                 )
@@ -623,13 +816,13 @@ for j in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P2")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_COL_0_CHECK_BOX_00_P2",
                     false_state = f"COMPLETE_ROW_{j}_CHECK_BOX_{j}{i + 1}_P2"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_COL_0_CHECK_BOX_00_P2",
                     false_state = f"HAS_P2_WON"
                 )
@@ -639,7 +832,7 @@ for j in range(3):
                 ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
-                literal = "2",
+                literal = "3",
                 bsel = "1",
                 alufn = "alu_op_code.mod",
                 we = "1"
@@ -654,13 +847,13 @@ for i in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P2")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_COL_{j + 1}_CHECK_BOX_{j + 1}0_P2",
                     false_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P2"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_COL_{j + 1}_CHECK_BOX_{j + 1}0_P2",
                     false_state = f"HAS_P2_WON"
                 )
@@ -669,13 +862,13 @@ for i in range(3):
                 tr = TransitionRule("always", true_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P2")
             elif i == 1:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_DIA_0_CHECK_BOX_00_P2",
                     false_state = f"COMPLETE_COL_{j}_CHECK_BOX_{j}{i + 1}_P2"
                 )
             else:
                 tr = TransitionRule(
-                    "rb_data == 1",
+                    "rb_data[0] == 1",
                     true_state = f"COMPLETE_DIA_0_CHECK_BOX_00_P2",
                     false_state = f"HAS_P2_WON"
                 )
@@ -685,7 +878,7 @@ for i in range(3):
                 ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
-                literal = "2",
+                literal = "3",
                 bsel = "1",
                 alufn = "alu_op_code.mod",
                 we = "1"
@@ -698,13 +891,13 @@ for i in range(3):
         tr = TransitionRule("always", true_state = f"COMPLETE_DIA_0_CHECK_BOX_{i+1}{i+1}_P2")
     elif i == 1:
         tr = TransitionRule(
-            "rb_data == 1",
+            "rb_data[0] == 1",
             true_state = f"COMPLETE_DIA_1_CHECK_BOX_20_P2",
             false_state = f"COMPLETE_DIA_0_CHECK_BOX_{i+1}{i+1}_P2"
         )
     else:
         tr = TransitionRule(
-            "rb_data == 1",
+            "rb_data[0] == 1",
             true_state = f"COMPLETE_DIA_1_CHECK_BOX_20_P2",
             false_state = f"HAS_P2_WON"
         )
@@ -714,7 +907,7 @@ for i in range(3):
             ra = f"regfile_addr.box{i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
-            literal = "2",
+            literal = "3",
             bsel = "1",
             alufn = "alu_op_code.mod",
             we = "1"
@@ -727,13 +920,13 @@ for i in range(3):
         tr = TransitionRule("always", true_state = f"COMPLETE_DIA_1_CHECK_BOX_{2-(i+1)}{i+1}_P2")
     elif i == 1:
         tr = TransitionRule(
-            "rb_data == 1",
+            "rb_data[0] == 1",
             true_state = f"SELECT_BOX_P1",
             false_state = f"COMPLETE_DIA_1_CHECK_BOX_{2-(i+1)}{i+1}_P2"
         )
     else:
         tr = TransitionRule(
-            "rb_data == 1",
+            "rb_data[0] == 1",
             true_state = f"SELECT_BOX_P1",
             false_state = f"HAS_P2_WON"
         )
@@ -743,7 +936,7 @@ for i in range(3):
             ra = f"regfile_addr.box{2-i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
-            literal = "2",
+            literal = "3",
             bsel = "1",
             alufn = "alu_op_code.mod",
             we = "1"
@@ -769,7 +962,7 @@ A.add_state(
         literal = "1",
         bsel = "1",
         rc = "regfile_addr.winner",
-        alufn_label = "alu_op_code.t_b",
+        alufn = "alu_op_code.t_b",
         we = "1",
         finished = "1",
     ),
@@ -782,7 +975,19 @@ A.add_state(
         literal = "2",
         bsel = "1",
         rc = "regfile_addr.winner",
-        alufn_label = "alu_op_code.t_b",
+        alufn = "alu_op_code.t_b",
+        we = "1",
+        finished = "1",
+    ),
+    TransitionRule("always", true_state = "END")
+)
+
+A.add_state(
+    f'DECLARE_DRAW',
+    StateOutput(
+        asel = "1",
+        rc = "regfile_addr.winner",
+        alufn = "alu_op_code.t_a",
         we = "1",
         finished = "1",
     ),
@@ -800,10 +1005,10 @@ A.add_state(
 A.generate_fsm_diagram()
 
 with open("./fsm_cases.luc", "w") as file:
-    for state in A.transition:
-        print(state)
-        file.write(state+"\n")
+    for fsm_state in A.transition:
+        print(fsm_state)
+        file.write(fsm_state+"\n")
 
-    a = A.get_lucid_code()
-    file.write(a)
-    print(a)
+    code = A.get_lucid_code()
+    file.write(code)
+    print(code)
