@@ -191,12 +191,16 @@ class StateMachine:
 
             true_state = extend_len(rule.true_state, length)
 
-            placed = False
+            placed_rb = False
+            placed_fin = False
             for condition, *attribs, ts in zip(conditions, *attr_maps.values(), true_state):
 
-                if not placed and "rb_data" in condition:
+                if not placed_rb and "rb_data" in condition:
                     lucid_code.append(f"  rb = {attr_maps['rb'][0]};")
-                    placed = True
+                    placed_rb = True
+                if not placed_fin and "finished" in attr_maps:
+                    lucid_code.append(f"  finished = {attr_maps['finished'][0]};")
+                    placed_fin = True
 
                 ind = ""
                 if condition != "always":
@@ -786,7 +790,9 @@ A.add_state(
 
 A.add_state(
     f'END',
-    StateOutput(),
+    StateOutput(
+        finished = "1"
+    ),
     TransitionRule("|c{button_0, button_asterisk, button_hash}", "START", label = " 0, * or # pressed")
 )
 

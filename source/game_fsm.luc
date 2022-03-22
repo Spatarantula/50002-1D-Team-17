@@ -1379,7 +1379,9 @@ module game_fsm (
         bsel = 1;
         game_state.d = game_state.END;
       game_state.END:
+        finished = 1;
         if(|c{button_0, button_asterisk, button_hash}) {
+          finished = 1;
           game_state.d = game_state.START;
         }
   }
