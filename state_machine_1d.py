@@ -230,6 +230,7 @@ class StateMachine:
 
 A = StateMachine()
 
+
 A.add_state(
     'START',
     StateOutput(start = "1"),
@@ -332,7 +333,7 @@ A.add_state(
         ra = "regfile_addr.box_addr",
         rb = "regfile_addr.selected_size_p1",
         ra2sel = "1",
-        alufn_label = "alu_op_code.t_b",
+        alufn = "alu_op_code.t_b",
         we = "1"
     ),
     TransitionRule("always", true_state = "COMPLETE_ROW_0_CHECK_BOX_00_P1"),
@@ -373,7 +374,7 @@ for j in range(3):
         A.add_state(
             f'COMPLETE_ROW_{j}_CHECK_BOX_{j}{i}_P1',
             StateOutput(
-                ra = "regfile_addr.box_addr",
+                ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
                 literal = "2",
@@ -419,7 +420,7 @@ for i in range(3):
         A.add_state(
             f'COMPLETE_COL_{j}_CHECK_BOX_{j}{i}_P1',
             StateOutput(
-                ra = "regfile_addr.box_addr",
+                ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
                 literal = "2",
@@ -448,7 +449,7 @@ for i in range(3):
     A.add_state(
         f'COMPLETE_DIA_0_CHECK_BOX_{i}{i}_P1',
         StateOutput(
-            ra = "regfile_addr.box_addr",
+            ra = f"regfile_addr.box{i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
             literal = "2",
@@ -477,7 +478,7 @@ for i in range(3):
     A.add_state(
         f'COMPLETE_DIA_1_CHECK_BOX_{2-i}{i}_P1',
         StateOutput(
-            ra = "regfile_addr.box_addr",
+            ra = f"regfile_addr.box{2-i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
             literal = "2",
@@ -594,7 +595,7 @@ A.add_state(
         ra = "regfile_addr.box_addr",
         rb = "regfile_addr.selected_size_p2",
         ra2sel = "1",
-        alufn_label = "alu_op_code.t_b",
+        alufn = "alu_op_code.t_b",
         we = "1"
     ),
     TransitionRule("always", true_state = "COMPLETE_ROW_0_CHECK_BOX_00_P2"),
@@ -635,7 +636,7 @@ for j in range(3):
         A.add_state(
             f'COMPLETE_ROW_{j}_CHECK_BOX_{j}{i}_P2',
             StateOutput(
-                ra = "regfile_addr.box_addr",
+                ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
                 literal = "2",
@@ -681,7 +682,7 @@ for i in range(3):
         A.add_state(
             f'COMPLETE_COL_{j}_CHECK_BOX_{j}{i}_P2',
             StateOutput(
-                ra = "regfile_addr.box_addr",
+                ra = f"regfile_addr.box{j}{i}",
                 rb = "regfile_addr.temp4",
                 rc = "regfile_addr.temp4",
                 literal = "2",
@@ -710,7 +711,7 @@ for i in range(3):
     A.add_state(
         f'COMPLETE_DIA_0_CHECK_BOX_{i}{i}_P2',
         StateOutput(
-            ra = "regfile_addr.box_addr",
+            ra = f"regfile_addr.box{i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
             literal = "2",
@@ -739,7 +740,7 @@ for i in range(3):
     A.add_state(
         f'COMPLETE_DIA_1_CHECK_BOX_{2-i}{i}_P2',
         StateOutput(
-            ra = "regfile_addr.box_addr",
+            ra = f"regfile_addr.box{2-i}{i}",
             rb = "regfile_addr.temp4",
             rc = "regfile_addr.temp4",
             literal = "2",
