@@ -1,8 +1,13 @@
 /**
 * Performs addition/subtraction on two 16 bit values, following the lab 3 schematic
 *
-* @input a     - 16 bit input from reg A
-* @input b     - 16 bit input from reg B
+* @input a       - 16 bit input from reg A
+* @input b       - 16 bit input from reg B
+* @input literal - 16 bit input from reg B
+* @input asel    - if set to 0, use the value from reg_a. else use 0
+* @input bsel    - if set to 0, use the value from reg_b. else use literal
+* @input wdsel   - if set to 0, use the value from the ALU output. else use 0
+* 
 * @input alufn -  6 bit control signal
 *   adder unit
 *   00 0000: a+b,
@@ -43,12 +48,14 @@
 module alu (
     input a[16],
     input b[16],
-    input alufn[6],
-    
+    input literal[16],
+
     input asel,
     input bsel,
     input wdsel,
 
+    input alufn[6],
+    
     output out[16],
     output z,
     output v,
@@ -80,7 +87,7 @@ module alu (
     if(asel)
       inp_a = 0;
     if(bsel)
-      inp_b = 0;
+      inp_b = literal;
 
     e = 0;
     z = adderALU.z;

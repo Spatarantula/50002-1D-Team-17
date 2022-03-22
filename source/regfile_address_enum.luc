@@ -1,45 +1,82 @@
 module regfile_address_enum (
-    output box00[4],
-    output box01[4],
-    output box02[4],
-    output box10[4],
-    output box11[4],
-    output box12[4],
-    output box20[4],
-    output box21[4],
-    output box22[4],
+    output box00[5],
+    output box01[5],
+    output box02[5],
+    output box10[5],
+    output box11[5],
+    output box12[5],
+    output box20[5],
+    output box21[5],
+    output box22[5],
 
-    output pieces_remaining_p1[4],
-    output pieces_remaining_p2[4],
+    output pieces_remaining_small_p1[5],
+    output pieces_remaining_small_p2[5],
 
-    output placement_p1[4],
-    output placement_p2[4],
+    output pieces_remaining_med_p1[5],
+    output pieces_remaining_med_p2[5],
+
+    output pieces_remaining_large_p1[5],
+    output pieces_remaining_large_p2[5],
+
+    output selected_size_p1[5],
+    output selected_size_p2[5],
     
-    output winner[4],
+    output winner[5],
 
-    output temp1[4],
-    output temp2[4]
+    output box_addr[5],
+
+    output temp1[5],
+    output temp2[5],
+    output temp3[5],
+    output temp4[5],
+    output temp5[5],
+    output temp6[5],
+    output temp7[5],
+    output temp8[5],
+    output temp9[5],
+    output temp10[5],
+    output temp11[5],
+    output temp12[5],
+    output temp13[5]
   ) {
     always {
-      box00 = 4h0;
-      box01 = 4h1;
-      box02 = 4h2;
-      box10 = 4h3;
-      box11 = 4h4;
-      box12 = 4h5;
-      box20 = 4h6;
-      box21 = 4h7;
-      box22 = 4h8;
+      box00 = 5h00;
+      box01 = 5h01;
+      box02 = 5h02;
+      box10 = 5h03;
+      box11 = 5h04;
+      box12 = 5h05;
+      box20 = 5h06;
+      box21 = 5h07;
+      box22 = 5h08;
 
-      pieces_remaining_p1 = 4h9;
-      pieces_remaining_p2 = 4hA;
+      pieces_remaining_small_p1 = 5h09;
+      pieces_remaining_small_p2 = 5h0A;
 
-      placement_p1 = 4hB;
-      placement_p2 = 4hC;
+      pieces_remaining_med_p1 = 5h0B;
+      pieces_remaining_med_p2 = 5h0C;
+
+      pieces_remaining_large_p1 = 5h0D;
+      pieces_remaining_large_p2 = 5h0E;
+
+      selected_size_p1 = 5h0F;
+      selected_size_p2 = 5h10;
     
-      winner = 4hD;
+      winner = 5h11;
 
-      temp1 = 4hE;
-      temp2 = 4hF;
+      box_addr = 5h12;
+      temp1 = 5h13;
+      temp2 = 5h14;
+      temp3 = 5h15;
+      temp4 = 5h16;
+      temp5 = 5h17;
+      temp6 = 5h18;
+      temp7 = 5h19;
+      temp8 = 5h1A;
+      temp9 = 5h1B;
+      temp10 = 5h1C;
+      temp11 = 5h1D;
+      temp12 = 5h1E;
+      temp13 = 5h1F;
     }
   }

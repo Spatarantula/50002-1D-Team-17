@@ -2,10 +2,12 @@ module regfile (
     input clk,
     input rst,
     
-    input ra[4],
-    input rb[4],
-    input rc[4],
+    input ra[5],
+    input rb[5],
+    input rc[5],
     
+    input ra2sel,
+
     input we,
     input data[16],
     
@@ -15,6 +17,7 @@ module regfile (
     output board_state[3][3][16],
     output pieces_remaining_p1[16],
     output pieces_remaining_p2[16],
+    output winner[16],
   ) {
 
   always {
