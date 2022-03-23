@@ -239,8 +239,8 @@ A.add_state(
 )
 
 size = [-1, "small", "med", "large"]
-size_p1 = [-1, "2", "8", "14"]
-size_p2 = [-1, "4", "10", "16"]
+size_p1 = [-1, "8", "14", "20"]
+size_p2 = [-1, "10", "16", "22"]
 
 
 for j in range(3):
