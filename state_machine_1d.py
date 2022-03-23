@@ -951,7 +951,7 @@ A.add_state(
     ),
     TransitionRule(
         "rb_data == 1",
-        true_state = f"SELECT_BOX_P1",
+        true_state = f"MAKE_BOX_00_MIN_P1",
         false_state = f"DECLARE_P2_WINNER"
     ),
 )
