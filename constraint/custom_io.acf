@@ -1,0 +1,7 @@
+pin clk CLOCK;
+clock clk 100MHz;
+
+pin rst_n RESET;
+
+pin disp_dr_out A48;
+pin ground AG;
